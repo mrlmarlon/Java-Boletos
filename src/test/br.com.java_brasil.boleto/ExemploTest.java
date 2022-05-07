@@ -74,4 +74,30 @@ final class ExemploTest {
         assertEquals("Não implementado!", exception.getMessage());
 
     }
+
+    @Test
+    @DisplayName("Testa Altera de Boleto")
+    void testeAlterarBoleto() {
+        // Lista Nula
+        assertThrows(NullPointerException.class, () -> boletoService.alteraBoleto(null));
+
+        // teste Sucesso (Não implementado)
+        Throwable exception =
+                assertThrows(BoletoException.class, () -> boletoService.alteraBoleto(new BoletoModel()));
+        assertEquals("Não implementado!", exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Testa Consulta de Boleto")
+    void testeConsultarBoleto() {
+        // Lista Nula
+        assertThrows(NullPointerException.class, () -> boletoService.consultaBoleto(null));
+
+        // teste Sucesso (Não implementado)
+        Throwable exception =
+                assertThrows(BoletoException.class, () -> boletoService.consultaBoleto(new BoletoModel()));
+        assertEquals("Não implementado!", exception.getMessage());
+
+    }
 }

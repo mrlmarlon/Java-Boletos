@@ -8,4 +8,8 @@ public interface MetodosGenericos {
     byte[] imprimirBoleto(@NonNull BoletoModel boletoModel);
 
     BoletoModel enviarBoleto(@NonNull BoletoModel boletoModel);
+
+    BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel);
+
+    BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel);
 }

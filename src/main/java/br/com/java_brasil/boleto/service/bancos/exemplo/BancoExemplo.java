@@ -19,4 +19,14 @@ public class BancoExemplo extends BoletoController {
     public BoletoModel enviarBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
     }
+
+    @Override
+    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Não implementado!");
+    }
 }

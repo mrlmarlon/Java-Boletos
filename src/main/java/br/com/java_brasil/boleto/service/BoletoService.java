@@ -25,4 +25,14 @@ public class BoletoService implements MetodosGenericos {
     public BoletoModel enviarBoleto(@NonNull BoletoModel boletoModel) {
         return this.controller.enviarBoleto(boletoModel);
     }
+
+    @Override
+    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+        return this.controller.alteraBoleto(boletoModel);
+    }
+
+    @Override
+    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
+        return this.controller.consultaBoleto(boletoModel);
+    }
 }

@@ -15,15 +15,16 @@ import java.util.List;
 public class BoletoModel implements Serializable {
 
     protected BigDecimal valorBoleto = BigDecimal.ZERO;
-    protected BigDecimal quantidadeMoeda;
-    protected BigDecimal valorMoeda;
     protected BigDecimal valorDescontos = BigDecimal.ZERO;
     protected BigDecimal valorDeducoes = BigDecimal.ZERO;
     protected BigDecimal valorMulta = BigDecimal.ZERO;
     protected BigDecimal valorAcrescimos = BigDecimal.ZERO;
+    protected BigDecimal percentualJuros;
+    protected BigDecimal percentualMulta;
+    protected int diasJuros;
+    protected int diasMulta;
     protected LocalDate dataEmissao;
     protected LocalDate dataVencimento;
-
     protected String especieMoeda;
     protected int codigoEspecieMoeda;
     protected String especieDocumento;
@@ -34,5 +35,8 @@ public class BoletoModel implements Serializable {
     protected List<String> instrucoes = Collections.emptyList();
     protected List<String> descricoes = Collections.emptyList();
     protected List<String> locaisDePagamento = Collections.emptyList();
+    protected String codigoBarras;
+    protected String codRetorno;
+    protected String mensagemRetorno;
 
 }

@@ -5,9 +5,6 @@ package br.com.java_brasil.boleto.exception;
  */
 public class BoletoException extends RuntimeException{
 
-    public BoletoException() {
-    }
-
     public BoletoException(String message) {
         super(message);
     }

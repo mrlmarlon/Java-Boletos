@@ -12,8 +12,8 @@ public class Beneficiario implements Serializable {
     private String agencia;
     private String digitoAgencia;
 
-    private String codigoBeneficiario;
-    private String digitoCodigoBeneficiario;
+    private String conta;
+    private String digitoConta;
 
     private String carteira;
     private String nossoNumero;

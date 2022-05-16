@@ -14,7 +14,7 @@ import java.util.List;
 //TODO Refatorar campos realmente necessarios
 public class BoletoModel implements Serializable {
 
-    protected BigDecimal valorBoleto = BigDecimal.ZERO;
+    protected BigDecimal valorBoleto;
     protected BigDecimal valorDescontos = BigDecimal.ZERO;
     protected BigDecimal valorDeducoes = BigDecimal.ZERO;
     protected BigDecimal valorMulta = BigDecimal.ZERO;

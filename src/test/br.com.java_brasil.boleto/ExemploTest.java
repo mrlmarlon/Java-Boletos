@@ -5,6 +5,7 @@ import br.com.java_brasil.boleto.model.BoletoBanco;
 import br.com.java_brasil.boleto.model.BoletoModel;
 import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.exemplo.ConfiguracaoExemplo;
+import br.com.java_brasil.boleto.util.ValidaUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,38 +16,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class ExemploTest {
 
     private BoletoService boletoService;
-    private BoletoBanco boletoBanco;
 
     @BeforeEach
     public void configuraTeste() {
         ConfiguracaoExemplo configuracao = new ConfiguracaoExemplo();
         configuracao.setUsuario("teste");
         configuracao.setSenha("123");
-        boletoBanco = BoletoBanco.EXEMPLO; //TODO Altere aqui com seu Banco
-        boletoService = new BoletoService(boletoBanco, configuracao);
+        boletoService = new BoletoService(BoletoBanco.EXEMPLO, configuracao);
     }
 
     @Test
-    @DisplayName("Testa Configuracoes")
-    void testeConfiguracoes() {
-        //Configuracao Sucesso
-        ConfiguracaoExemplo configuracao = new ConfiguracaoExemplo();
-        configuracao.setUsuario("teste");
-        configuracao.setSenha("123");
-        configuracao.verificaConfiguracoes();
-
-        //Configuracao Erro
+    @DisplayName("Testa Erro Configuracoes")
+    void testaErroConfiguracoes() {
+        ConfiguracaoExemplo configuracao = (ConfiguracaoExemplo) boletoService.getConfiguracao();
         configuracao.setSenha(null);
         Throwable exception =
-                assertThrows(BoletoException.class, configuracao::verificaConfiguracoes);
-        assertEquals("Configuracoes invalidas.", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Testa Enum")
-    void testeEnum() {
-        String descricao = boletoBanco.getDescricao();
-        assertEquals("Exemplo", descricao);
+                assertThrows(BoletoException.class, () -> ValidaUtils.validaConfiguracao(configuracao));
+        assertEquals("Campo senha não pode estar vazio.", exception.getMessage());
     }
 
     @Test

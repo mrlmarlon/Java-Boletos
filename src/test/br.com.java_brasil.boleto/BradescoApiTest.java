@@ -5,7 +5,7 @@ import br.com.java_brasil.boleto.model.*;
 import br.com.java_brasil.boleto.model.enums.AmbienteEnum;
 import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.ConfiguracaoBradescoAPI;
-import br.com.java_brasil.boleto.service.bancos.exemplo.ConfiguracaoExemplo;
+import br.com.java_brasil.boleto.util.ValidaUtils;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,54 +22,51 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class BradescoApiTest {
 
     private BoletoService boletoService;
-    private BoletoBanco boletoBanco;
 
     @BeforeEach
     public void configuraTeste() {
         ConfiguracaoBradescoAPI configuracao = new ConfiguracaoBradescoAPI();
-        configuracao.setClientId("123");
-        configuracao.setCpfCnpj("99999999999999");
-        configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
-        configuracao.setCaminhoCertificado("d:/teste/teste.pem");
-        boletoBanco = BoletoBanco.BRADESCO_API; //TODO Altere aqui com seu Banco
-        boletoService = new BoletoService(boletoBanco, configuracao);
-    }
-
-    @Test
-    @DisplayName("Testa Configuracoes")
-    void testeConfiguracoes() {
-        //Configuracao Sucesso
-        ConfiguracaoBradescoAPI configuracao = new ConfiguracaoBradescoAPI();
-        configuracao.setClientId("123");
-        configuracao.setCpfCnpj("99999999999999");
-        configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
-        configuracao.setCaminhoCertificado("d:/teste/teste.pem");
-        configuracao.verificaConfiguracoes();
-
-        //Configuracao Erro
-        configuracao.setClientId(null);
-        Throwable exception =
-                assertThrows(BoletoException.class, configuracao::verificaConfiguracoes);
-        assertEquals("Configuracoes invalidas.", exception.getMessage());
-    }
-
-    @Test
-    void testaConsumo() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
-        ConfiguracaoBradescoAPI configuracao = new ConfiguracaoBradescoAPI();
-        configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
-        configuracao.setCaminhoCertificado("d:/teste/bradesco.pem");
         configuracao.setClientId("9c228ae2-6277-4a8c-a26b-51223a0aaa09");
         configuracao.setCpfCnpj("38052160005701");
+        configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
+        configuracao.setCaminhoCertificado("d:/teste/bradesco.pem");
+        boletoService = new BoletoService(BoletoBanco.BRADESCO_API, configuracao);
+    }
 
-        BoletoService boletoService = new BoletoService(BoletoBanco.BRADESCO_API, configuracao);
-        BoletoModel retorno = boletoService.enviarBoleto(preencheBoleto());
+    @Test
+    @DisplayName("Testa Erro Configuracoes")
+    void testaErroConfiguracoes() {
+        ConfiguracaoBradescoAPI configuracao = (ConfiguracaoBradescoAPI) boletoService.getConfiguracao();
+        configuracao.setClientId(null);
+        Throwable exception =
+                assertThrows(BoletoException.class, () -> ValidaUtils.validaConfiguracao(configuracao));
+        assertEquals("Campo clientId não pode estar vazio.", exception.getMessage());
+    }
 
+    @Test
+    @DisplayName("Testa Impressão Boleto")
+    void testeImprimirBoleto() {
+        // Model Null
+        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoleto(null));
+
+        // teste Sucesso (Não implementado)
+        Throwable exception =
+                assertThrows(BoletoException.class, () -> boletoService.imprimirBoleto(new BoletoModel()));
+        assertEquals("Não implementado!", exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Testa Valida e Envia Boleto")
+    void testaEnvioBoleto() {
+        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        logger.setLevel(Level.DEBUG);
+        BoletoModel boletoModel = preencheBoleto();
+        ValidaUtils.validaBoletoModel(boletoModel, this.boletoService.getConfiguracao().camposObrigatoriosBoleto());
+        BoletoModel retorno = boletoService.enviarBoleto(boletoModel);
         System.out.println(retorno.getCodRetorno() + " - " + retorno.getMensagemRetorno());
         System.out.println(retorno.getCodigoBarras());
-
+//
 //        byte[] bytes = boletoService.imprimirBoleto(retorno);
         // SALVAR PDF
 

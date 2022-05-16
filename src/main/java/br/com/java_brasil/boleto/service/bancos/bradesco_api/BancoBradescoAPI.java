@@ -9,6 +9,8 @@ import br.com.java_brasil.boleto.util.BoletoUtil;
 import br.com.java_brasil.boleto.util.RestUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -31,11 +33,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.apache.http.HttpHeaders.*;
 
@@ -60,13 +58,14 @@ public class BancoBradescoAPI extends BoletoController {
             BoletoBradescoAPIResponse boletoBradescoAPIResponse = registraBoleto(boletoBradescoAPIRequest);
             return montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
 
-        }catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException | InvalidKeyException e){
-            throw new BoletoException(e.getMessage(),e);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException | InvalidKeyException e) {
+            throw new BoletoException(e.getMessage(), e);
         }
     }
 
     /**
      * Gera JWT API
+     *
      * @param configuracao
      * @return
      * @throws IOException
@@ -75,26 +74,19 @@ public class BancoBradescoAPI extends BoletoController {
      * @throws SignatureException
      * @throws InvalidKeyException
      */
-    private String gerarJWT(ConfiguracaoBradescoAPI configuracao) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
-        LocalDateTime data = LocalDateTime.now();
-        long dataAtual = data.toEpochSecond(ZoneId.of("America/Sao_Paulo").getRules().getOffset(data));
-        long dataFutura = data.plusMonths(1).toEpochSecond(ZoneId.of("America/Sao_Paulo").getRules().getOffset(data));
-
-        String header = "{\"alg\":\"RS256\",\"typ\":\"JWT\"}";
-
-        String payload = "{" +
-                "\"aud\":\"" + configuracao.getURLBase() + configuracao.getUrlToken() + "\"," +
-                "\"sub\":\"" + configuracao.getClientId() + "\"," +
-                "\"iat\":\"" + dataAtual + "\"," +
-                "\"exp\":\"" + dataFutura + "\"," +
-                "\"jti\":\"" + System.currentTimeMillis() + "\"," +
-                "\"ver\":\"1.1\"}";
-
-        String base64Header = replaceUrlEncoder(Base64.getEncoder().encodeToString(header.getBytes()));
-        String base64payload = replaceUrlEncoder(Base64.getEncoder().encodeToString(payload.getBytes()));
-
-        String assinatura = replaceUrlEncoder(signSHA256RSA(configuracao, base64Header + "." + base64payload));
-        return base64Header + "." + base64payload + "." + assinatura;
+    private String gerarJWT(ConfiguracaoBradescoAPI configuracao) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        Date data = new Date();
+        return Jwts.builder()
+                .setAudience(configuracao.getURLBase() + configuracao.getUrlToken())
+                .setSubject(configuracao.getClientId())
+                .setIssuedAt(data)
+                .setExpiration(new Date(data.getTime() + (1000 * 60 * 60 * 24)))
+                .setId(String.valueOf(System.currentTimeMillis()))
+                .signWith(
+                        SignatureAlgorithm.RS256,
+                        getKey(configuracao)
+                )
+                .compact();
     }
 
     private BoletoBradescoAPIResponse registraBoleto(BoletoBradescoAPIRequest boletoRequest) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
@@ -144,8 +136,7 @@ public class BancoBradescoAPI extends BoletoController {
         return boletoModel;
     }
 
-
-    public String getToken(ConfiguracaoBradescoAPI configuracao) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
+    public String getToken(ConfiguracaoBradescoAPI configuracao) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 
         Header[] headers = {
                 new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
@@ -176,6 +167,14 @@ public class BancoBradescoAPI extends BoletoController {
     }
 
     private String signSHA256RSA(ConfiguracaoBradescoAPI configuracao, String input) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
+        Signature privateSignature = Signature.getInstance("SHA256withRSA");
+        privateSignature.initSign(getKey(configuracao));
+        privateSignature.update(input.getBytes(StandardCharsets.UTF_8));
+        byte[] s = privateSignature.sign();
+        return Base64.getEncoder().encodeToString(s);
+    }
+
+    private PrivateKey getKey(ConfiguracaoBradescoAPI configuracao) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         FileInputStream fileInputStream = FileUtils.openInputStream(new File(configuracao.getCaminhoCertificado()));
         String pk = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8.name());
         String realPK = pk.replaceAll("-----END PRIVATE KEY-----", "")
@@ -187,18 +186,7 @@ public class BancoBradescoAPI extends BoletoController {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(b1);
         KeyFactory kf = KeyFactory.getInstance("RSA");
 
-        Signature privateSignature = Signature.getInstance("SHA256withRSA");
-        privateSignature.initSign(kf.generatePrivate(spec));
-        privateSignature.update(input.getBytes(StandardCharsets.UTF_8));
-        byte[] s = privateSignature.sign();
-        return Base64.getEncoder().encodeToString(s);
-    }
-
-
-    private static String replaceUrlEncoder(String valor) {
-        return valor.replaceAll("=", "")
-                .replaceAll("\\+", "-")
-                .replaceAll("/", "_");
+        return kf.generatePrivate(spec);
     }
 
     @Override
@@ -213,6 +201,7 @@ public class BancoBradescoAPI extends BoletoController {
 
     /**
      * Converte BoletoModel para o padrão de entrada da API
+     *
      * @param boletoModel
      * @return
      */

@@ -1,6 +1,7 @@
 package br.com.java_brasil.boleto.model;
 
-public interface Configuracao {
+import java.util.List;
 
-    void verificaConfiguracoes();
+public interface Configuracao {
+    List<String> camposObrigatoriosBoleto();
 }

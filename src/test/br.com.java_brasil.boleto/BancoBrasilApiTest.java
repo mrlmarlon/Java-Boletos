@@ -28,10 +28,10 @@ final class BancoBrasilApiTest {
     @BeforeEach
     public void configuraTeste() {
         ConfiguracaoBancoBrasilAPI configuracao = new ConfiguracaoBancoBrasilAPI();
-        configuracao.setClientId("eyJpZCI6Ijk0MWVlYmQtNDAwNC00YTkyIiwiY29kaWdvUHVibGljYWRvciI6MCwiY29kaWdvU29mdHdhcmUiOjM0ODc3LCJzZXF1ZW5jaWFsSW5zdGFsYWNhbyI6MX0");
-        configuracao.setClientSecret("eyJpZCI6IjQ5YTAyNTItMTljNC00MGNlLTk2YzMtNWZhMTViZDIwOTUyZDdjYiIsImNvZGlnb1B1YmxpY2Fkb3IiOjAsImNvZGlnb1NvZnR3YXJlIjozNDg3Nywic2VxdWVuY2lhbEluc3RhbGFjYW8iOjEsInNlcXVlbmNpYWxDcmVkZW5jaWFsIjoxLCJhbWJpZW50ZSI6ImhvbW9sb2dhY2FvIiwiaWF0IjoxNjUyMTg0MDY1Mjc5fQ");
-        configuracao.setDeveloperKey("d27bc7790cffabe0136ae17de0050356b9f1a5bc");
-        configuracao.setAuthorization("Basic ZXlKcFpDSTZJamswTVdWbFltUXROREF3TkMwMFlUa3lJaXdpWTI5a2FXZHZVSFZpYkdsallXUnZjaUk2TUN3aVkyOWthV2R2VTI5bWRIZGhjbVVpT2pNME9EYzNMQ0p6WlhGMVpXNWphV0ZzU1c1emRHRnNZV05oYnlJNk1YMDpleUpwWkNJNklqUTVZVEF5TlRJdE1UbGpOQzAwTUdObExUazJZek10TldaaE1UVmlaREl3T1RVeVpEZGpZaUlzSW1OdlpHbG5iMUIxWW14cFkyRmtiM0lpT2pBc0ltTnZaR2xuYjFOdlpuUjNZWEpsSWpvek5EZzNOeXdpYzJWeGRXVnVZMmxoYkVsdWMzUmhiR0ZqWVc4aU9qRXNJbk5sY1hWbGJtTnBZV3hEY21Wa1pXNWphV0ZzSWpveExDSmhiV0pwWlc1MFpTSTZJbWh2Ylc5c2IyZGhZMkZ2SWl3aWFXRjBJam94TmpVeU1UZzBNRFkxTWpjNWZR");
+        configuracao.setClientId("");
+        configuracao.setClientSecret("");
+        configuracao.setDeveloperKey("");
+        configuracao.setAuthorization("");
         configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
         boletoBanco = BoletoBanco.BANCO_BRASIL_API;
         boletoService = new BoletoService(boletoBanco, configuracao);
@@ -42,10 +42,10 @@ final class BancoBrasilApiTest {
     void testeConfiguracoes() {
         //Configuracao Sucesso
         ConfiguracaoBancoBrasilAPI configuracao = new ConfiguracaoBancoBrasilAPI();
-        configuracao.setClientId("eyJpZCI6Ijk0MWVlYmQtNDAwNC00YTkyIiwiY29kaWdvUHVibGljYWRvciI6MCwiY29kaWdvU29mdHdhcmUiOjM0ODc3LCJzZXF1ZW5jaWFsSW5zdGFsYWNhbyI6MX0");
-        configuracao.setClientSecret("eyJpZCI6IjQ5YTAyNTItMTljNC00MGNlLTk2YzMtNWZhMTViZDIwOTUyZDdjYiIsImNvZGlnb1B1YmxpY2Fkb3IiOjAsImNvZGlnb1NvZnR3YXJlIjozNDg3Nywic2VxdWVuY2lhbEluc3RhbGFjYW8iOjEsInNlcXVlbmNpYWxDcmVkZW5jaWFsIjoxLCJhbWJpZW50ZSI6ImhvbW9sb2dhY2FvIiwiaWF0IjoxNjUyMTg0MDY1Mjc5fQ");
-        configuracao.setDeveloperKey("d27bc7790cffabe0136ae17de0050356b9f1a5bc");
-        configuracao.setAuthorization("Basic ZXlKcFpDSTZJamswTVdWbFltUXROREF3TkMwMFlUa3lJaXdpWTI5a2FXZHZVSFZpYkdsallXUnZjaUk2TUN3aVkyOWthV2R2VTI5bWRIZGhjbVVpT2pNME9EYzNMQ0p6WlhGMVpXNWphV0ZzU1c1emRHRnNZV05oYnlJNk1YMDpleUpwWkNJNklqUTVZVEF5TlRJdE1UbGpOQzAwTUdObExUazJZek10TldaaE1UVmlaREl3T1RVeVpEZGpZaUlzSW1OdlpHbG5iMUIxWW14cFkyRmtiM0lpT2pBc0ltTnZaR2xuYjFOdlpuUjNZWEpsSWpvek5EZzNOeXdpYzJWeGRXVnVZMmxoYkVsdWMzUmhiR0ZqWVc4aU9qRXNJbk5sY1hWbGJtTnBZV3hEY21Wa1pXNWphV0ZzSWpveExDSmhiV0pwWlc1MFpTSTZJbWh2Ylc5c2IyZGhZMkZ2SWl3aWFXRjBJam94TmpVeU1UZzBNRFkxTWpjNWZR");
+        configuracao.setClientId("");
+        configuracao.setClientSecret("");
+        configuracao.setDeveloperKey("");
+        configuracao.setAuthorization("");
         configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
         configuracao.verificaConfiguracoes();
 

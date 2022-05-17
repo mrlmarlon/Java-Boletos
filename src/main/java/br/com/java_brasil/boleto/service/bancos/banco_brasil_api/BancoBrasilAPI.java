@@ -40,7 +40,8 @@ public class BancoBrasilAPI extends BoletoController {
         try {
 
             BoletoBancoBrasilAPIRequest boletoBancoBrasilAPIRequest = montaBoletoRequest(boletoModel);
-            return null;
+            BoletoBancoBrasilAPIResponse boletoBancoBrasilAPIResponse = registraBoleto(boletoBancoBrasilAPIRequest);
+            return montaBoletoResponse(boletoModel, boletoBancoBrasilAPIResponse);
 
         } catch (IOException e) {
             throw new BoletoException(e.getMessage(),e);
@@ -84,6 +85,35 @@ public class BancoBrasilAPI extends BoletoController {
 
         return token;
     }
+
+    /**
+     * Registra boleto no Banco do Brasil
+     * @param boletoRequest
+     * @return
+     * @throws IOException
+     */
+    private BoletoBancoBrasilAPIResponse registraBoleto(BoletoBancoBrasilAPIRequest boletoRequest) throws IOException {
+
+        ConfiguracaoBancoBrasilAPI configuracao = (ConfiguracaoBancoBrasilAPI) this.getConfiguracao();
+        String token = getToken(configuracao);
+
+        String json = RestUtil.ObjectToJson(boletoRequest);
+        log.debug("Json envio Banco do Brasil: " + json);
+
+        Header[] headers = {
+                new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
+                new BasicHeader(CONTENT_TYPE, "application/json;charset=ISO-8859-1"),
+                new BasicHeader(AUTHORIZATION, "Bearer " + token),
+        };
+
+        CloseableHttpResponse response = RestUtil.post(configuracao.getURLBase() + configuracao.getUrlRegistroBoleto() + configuracao.getDeveloperKey(),
+                headers, json);
+        String retorno = RestUtil.validaResponseERetornaBody(response);
+        log.debug("Retorno envio Banco do Brasil: " + retorno);
+
+        return RestUtil.JsonToObject(retorno, BoletoBancoBrasilAPIResponse.class);
+    }
+
 
     /**
      * Converte BoletoModel para o padrão de entrada da API

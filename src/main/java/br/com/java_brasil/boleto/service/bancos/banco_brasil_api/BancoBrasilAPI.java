@@ -47,8 +47,43 @@ public class BancoBrasilAPI extends BoletoController {
         }
     }
 
+    /**
+     * Obtem Token de acesso
+     * @param configuracao
+     * @return
+     * @throws IOException
+     */
+    public String getToken(ConfiguracaoBancoBrasilAPI configuracao) throws IOException {
 
+        Header[] headers = {
+                new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
+                new BasicHeader(CONTENT_TYPE, "application/x-www-form-urlencoded"),
+                new BasicHeader(AUTHORIZATION, configuracao.getAuthorization()),
+        };
 
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", configuracao.getClientId()));
+        nvps.add(new BasicNameValuePair("client_secret", configuracao.getClientSecret()));
+        nvps.add(new BasicNameValuePair("scope", "cobrancas.boletos-info cobrancas.boletos-requisicao"));
+
+        HttpPost httpPost = new HttpPost(configuracao.getURLToken());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, StandardCharsets.UTF_8));
+        httpPost.setHeaders(headers);
+        CloseableHttpResponse response = RestUtil.enviaComando(httpPost);
+
+        String retorno = RestUtil.validaResponseERetornaBody(response);
+        log.debug("Retorno Token Bradesco: " + retorno);
+
+        JsonObject json = JsonParser.parseString(retorno).getAsJsonObject();
+        String token = json.get("access_token").getAsString();
+        LocalDateTime expires = LocalDateTime.now().plusSeconds(json.get("expires_in").getAsInt());
+
+        log.debug("Token Banco do Brasil: " + token);
+        log.debug("Expira: " + expires);
+
+        return token;
+    }
 
     /**
      * Converte BoletoModel para o padrão de entrada da API

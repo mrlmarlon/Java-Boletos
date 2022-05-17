@@ -1,6 +1,6 @@
 package br.com.java_brasil.boleto.model;
 
-import br.com.java_brasil.boleto.service.bancos.bradesco_api.BradescoAPI;
+import br.com.java_brasil.boleto.service.bancos.banco_brasil_api.BancoBrasilAPI;
 import br.com.java_brasil.boleto.service.bancos.exemplo.BancoExemplo;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -8,7 +8,8 @@ import lombok.SneakyThrows;
 @Getter
 public enum BoletoBanco {
 
-    EXEMPLO("Exemplo", BancoExemplo.class);
+    EXEMPLO("Exemplo", BancoExemplo.class),
+    BANCO_BRASIL_API("Banco do Brasil API", BancoBrasilAPI.class);
 
     private final String descricao;
     private final Class<? extends BoletoController> controller;

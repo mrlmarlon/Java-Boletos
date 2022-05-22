@@ -16,7 +16,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -32,9 +31,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 import static org.apache.http.HttpHeaders.*;
 
@@ -57,7 +58,7 @@ public class BancoBradescoAPI extends BoletoController {
 
             BoletoBradescoAPIRequest boletoBradescoAPIRequest = BoletoBradescoModelConverter.montaBoletoRequest(boletoModel);
             BoletoBradescoAPIResponse boletoBradescoAPIResponse = registraBoleto(boletoBradescoAPIRequest);
-            return montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
+            return BoletoBradescoModelConverter.montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException | InvalidKeyException e) {
             throw new BoletoException(e.getMessage(), e);
@@ -128,13 +129,6 @@ public class BancoBradescoAPI extends BoletoController {
         String retorno = RestUtil.validaResponseERetornaBody(response);
         log.debug("Retorno Envio Bradesco: " + retorno);
         return RestUtil.JsonToObject(retorno, BoletoBradescoAPIResponse.class);
-    }
-
-    private BoletoModel montaBoletoResponse(BoletoModel boletoModel, BoletoBradescoAPIResponse boletoBradescoAPIResponse) {
-        boletoModel.setCodRetorno(boletoBradescoAPIResponse.getCodigoRetorno());
-        boletoModel.setMensagemRetorno(boletoBradescoAPIResponse.getMensagemRetorno());
-        boletoModel.setCodigoBarras(boletoBradescoAPIResponse.getCdBarras());
-        return boletoModel;
     }
 
     public String getToken(ConfiguracaoBradescoAPI configuracao) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {

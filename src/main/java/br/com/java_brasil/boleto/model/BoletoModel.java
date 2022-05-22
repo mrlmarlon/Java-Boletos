@@ -36,6 +36,7 @@ public class BoletoModel implements Serializable {
     protected List<String> descricoes = Collections.emptyList();
     protected List<String> locaisDePagamento = Collections.emptyList();
     protected String codigoBarras;
+    protected String linhaDigitavel;
     protected String codRetorno;
     protected String mensagemRetorno;
 

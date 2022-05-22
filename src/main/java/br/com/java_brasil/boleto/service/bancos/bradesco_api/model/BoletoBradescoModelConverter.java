@@ -29,6 +29,15 @@ public class BoletoBradescoModelConverter {
         return boletoRequest;
     }
 
+
+    public static BoletoModel montaBoletoResponse(BoletoModel boletoModel, BoletoBradescoAPIResponse boletoBradescoAPIResponse) {
+        boletoModel.setCodRetorno(boletoBradescoAPIResponse.getCodigoRetorno());
+        boletoModel.setMensagemRetorno(boletoBradescoAPIResponse.getMensagemRetorno());
+        boletoModel.setCodigoBarras(boletoBradescoAPIResponse.getCdBarras());
+        return boletoModel;
+    }
+
+
     private static void preencheDadosBoleto(BoletoModel boletoModel, BoletoBradescoAPIRequest boletoRequest) {
         boletoRequest.setDtEmissaoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(LocalDate.now()));
         boletoRequest.setDtVencimentoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));

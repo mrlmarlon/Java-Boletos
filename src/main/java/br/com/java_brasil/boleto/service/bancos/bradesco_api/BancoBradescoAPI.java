@@ -5,6 +5,7 @@ import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIRequest;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIResponse;
+import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoModelConverter;
 import br.com.java_brasil.boleto.util.BoletoUtil;
 import br.com.java_brasil.boleto.util.RestUtil;
 import com.google.gson.JsonObject;
@@ -54,7 +55,7 @@ public class BancoBradescoAPI extends BoletoController {
 
         try {
 
-            BoletoBradescoAPIRequest boletoBradescoAPIRequest = montaBoletoRequest(boletoModel);
+            BoletoBradescoAPIRequest boletoBradescoAPIRequest = BoletoBradescoModelConverter.montaBoletoRequest(boletoModel);
             BoletoBradescoAPIResponse boletoBradescoAPIResponse = registraBoleto(boletoBradescoAPIRequest);
             return montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
 
@@ -199,58 +200,4 @@ public class BancoBradescoAPI extends BoletoController {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
-    /**
-     * Converte BoletoModel para o padrão de entrada da API
-     *
-     * @param boletoModel
-     * @return
-     */
-    private BoletoBradescoAPIRequest montaBoletoRequest(BoletoModel boletoModel) {
-        BoletoBradescoAPIRequest boletoRequest = new BoletoBradescoAPIRequest();
-        boletoRequest.setAgenciaDestino(Integer.valueOf(boletoModel.getBeneficiario().getAgencia()));
-        boletoRequest.setNuCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(0, 8)));
-        boletoRequest.setFilialCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(8, 12)));
-        boletoRequest.setCtrlCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(boletoModel.getBeneficiario().getDocumento().length() - 2)));
-        boletoRequest.setIdProduto(Integer.valueOf(boletoModel.getBeneficiario().getCarteira()));
-        boletoRequest.setNuNegociacao(
-                Long.valueOf(StringUtils.leftPad(boletoModel.getBeneficiario().getAgencia(), 4, '0') +
-                        "0000000" +
-                        StringUtils.leftPad(boletoModel.getBeneficiario().getConta(), 7, '0')));
-        boletoRequest.setNuCliente(boletoModel.getPagador().getCodigo());
-        boletoRequest.setDtEmissaoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(LocalDate.now()));
-        boletoRequest.setDtVencimentoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        boletoRequest.setVlNominalTitulo(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorBoleto(), 2)));
-        boletoRequest.setControleParticipante(boletoModel.getPagador().getCodigo());
-
-        if (boletoModel.getDiasJuros() != 0) {
-            boletoRequest.setPercentualJuros(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualJuros())));
-            boletoRequest.setQtdeDiasJuros(boletoModel.getDiasJuros());
-        }
-
-        if (boletoModel.getDiasMulta() != 0) {
-            boletoRequest.setPercentualMulta(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualMulta())));
-            boletoRequest.setQtdeDiasMulta(Integer.valueOf(String.valueOf(boletoModel.getDiasMulta())));
-        }
-
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorDescontos())) {
-            boletoRequest.setVlDesconto1(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorDescontos(), 2)));
-            boletoRequest.setDataLimiteDesconto1(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        }
-
-        boletoRequest.setNomePagador(BoletoUtil.limitarTamanhoString(boletoModel.getPagador().getNome(), 70));
-        boletoRequest.setLogradouroPagador(boletoModel.getPagador().getEndereco().getLogradouro());
-        boletoRequest.setNuLogradouroPagador(boletoModel.getPagador().getEndereco().getNumero());
-        boletoRequest.setComplementoLogradouroPagador(BoletoUtil.limitarTamanhoString(
-                Optional.ofNullable(boletoModel.getPagador().getEndereco().getComplemento()).orElse(""), 15));
-        boletoRequest.setCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(0, 5)));
-        boletoRequest.setComplementoCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(5)));
-        boletoRequest.setBairroPagador(boletoModel.getPagador().getEndereco().getBairro());
-        boletoRequest.setMunicipioPagador(boletoModel.getPagador().getEndereco().getCidade());
-        boletoRequest.setUfPagador(boletoModel.getPagador().getEndereco().getUf());
-        boletoRequest.setCdIndCpfcnpjPagador(boletoModel.getPagador().isClienteCpf() ? 1 : 2);
-        boletoRequest.setNuCpfcnpjPagador(Long.valueOf(StringUtils.leftPad(boletoModel.getPagador().getDocumento(), 14, '0')));
-        boletoRequest.setEndEletronicoPagador(Optional.ofNullable(boletoModel.getPagador().getEmail()).orElse(""));
-
-        return boletoRequest;
-    }
 }

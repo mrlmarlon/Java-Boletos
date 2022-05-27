@@ -38,6 +38,10 @@ public class BoletoUtil {
         return data.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
+    public static String getDataFormatoYYYYMMDD(LocalDate data){
+        return data.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
     public static String valorSemPontos(BigDecimal valor, int casas){
         return valor.setScale(casas, RoundingMode.HALF_UP)
                 .toString().replace(".", "");

@@ -25,7 +25,7 @@ public class SicoobUtil {
 
     public static String getUrlAutenticacao(ConfiguracaoSicoobAPI configuracao, String urlCallback) {
 
-        return configuracao.getURLBase() + configuracao.getUrlAuthorize() + "?response_type=code" +
+        return configuracao.getURLAuth() + configuracao.getUrlAuthorize() + "?response_type=code" +
                 "&redirect_uri=" + urlCallback +
                 "&client_id=" + configuracao.getClientId() +
                 "&cooperativa=" + configuracao.getCooperativa() +
@@ -45,7 +45,7 @@ public class SicoobUtil {
     }
 
     private static void capturaToken(ConfiguracaoSicoobAPI configuracao, List<NameValuePair> nvps, Header[] headers) throws IOException {
-        HttpPost httpPost = new HttpPost(configuracao.getURLBase() + configuracao.getUrlToken());
+        HttpPost httpPost = new HttpPost(configuracao.getURLAuth() + configuracao.getUrlToken());
         httpPost.setEntity(new UrlEncodedFormEntity(nvps, StandardCharsets.UTF_8));
         httpPost.setHeaders(headers);
         CloseableHttpResponse response = RestUtil.enviaComando(httpPost);

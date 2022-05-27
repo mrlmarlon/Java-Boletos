@@ -23,7 +23,7 @@ public class ConfiguracaoSicoobAPI implements Configuracao {
     private String cooperativa;
     @NotEmpty
     private String contaCorrente;
-    @NotEmpty
+    @NotNull
     private Integer numeroContrato;
     @NotEmpty
     private String basicToken;
@@ -32,7 +32,9 @@ public class ConfiguracaoSicoobAPI implements Configuracao {
     @NotEmpty
     private String urlBaseHomologacao = "https://sandbox.sicoob.com.br";
     @NotEmpty
-    private String urlBaseProducao = "https://sandbox.sicoob.com.br";
+    private String urlAuthProducao = "https://api.sisbr.com.br/auth";
+    @NotEmpty
+    private String urlBaseProducao = "https://api.sisbr.com.br/cooperado";
     @NotEmpty
     private String urlToken = "/token";
     @NotEmpty
@@ -48,6 +50,10 @@ public class ConfiguracaoSicoobAPI implements Configuracao {
 
     public String getURLBase() {
         return this.ambiente.equals(AmbienteEnum.PRODUCAO) ? this.urlBaseProducao : this.urlBaseHomologacao;
+    }
+
+    public String getURLAuth() {
+        return this.ambiente.equals(AmbienteEnum.PRODUCAO) ? this.urlAuthProducao : this.urlBaseHomologacao;
     }
 
     @Override

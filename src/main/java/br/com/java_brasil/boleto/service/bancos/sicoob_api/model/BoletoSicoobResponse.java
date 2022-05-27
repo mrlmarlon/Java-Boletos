@@ -5,8 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BoletoSicoobConsultaResponse {
-
-    private BoletoSicoobResultado resultado;
-
+public class BoletoSicoobResponse {
+    private BoletoSicoobModel resultado;
 }

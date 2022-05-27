@@ -39,5 +39,7 @@ public class BoletoModel implements Serializable {
     protected String linhaDigitavel;
     protected String codRetorno;
     protected String mensagemRetorno;
+    protected String situacaoBoleto;
+    protected byte[] pdfBoleto;
 
 }

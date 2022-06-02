@@ -1,7 +1,6 @@
 package br.com.java_brasil.boleto.service.bancos.sicoob_api.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +19,6 @@ public class BoletoSicoobRateioCreditos {
     private String nomeTitular;
     private Integer codigoFinalidadeTed;
     private String codigoTipoContaDestinoTed;
-    private Integer quantidadeDiasFloat;
     private String dataFloatCredito;
-    
+    private Integer quantidadeDiasFloat;
 }

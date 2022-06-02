@@ -59,27 +59,25 @@ public class ConfiguracaoSicoobAPI implements Configuracao {
     @Override
     public List<String> camposObrigatoriosBoleto() {
         return Arrays.asList(
-                "especieDocumento"
-//                "beneficiario.agencia",
-//                "beneficiario.digitoAgencia",
-//                "beneficiario.conta",
-//                "beneficiario.digitoConta",
-//                "beneficiario.documento",
-//                "beneficiario.carteira",
-//                "beneficiario.nossoNumero",
-//                "pagador.nome",
-//                "pagador.documento",
-//                "pagador.codigo",
-//                "pagador.endereco.logradouro",
-//                "pagador.endereco.numero",
-//                "pagador.endereco.bairro",
-//                "pagador.endereco.cep",
-//                "pagador.endereco.cidade",
-//                "pagador.endereco.uf",
-//                "valorBoleto",
-//                "dataVencimento",
-//                "beneficiario",
-//                "pagador"
+            "numeroContrato",
+            "modalidade",
+            "numeroContaCorrente",
+            "especieDocumento",
+            "numeroBoleto",
+            "valor",
+            "dataVencimento",
+            "pagador",
+            "pagador.numeroCpfCnpj",
+            "pagador.nome",
+            "pagador.endereco",
+            "pagador.endereco.logradouro",
+            "pagador.endereco.bairro",
+            "pagador.endereco.cidade",
+            "pagador.endereco.cep",
+            "pagador.endereco.uf",                        
+            "beneficiario",
+            "beneficiario.numeroCpfCnpj",
+            "beneficiario.nome"
         );
     }
 

@@ -1,6 +1,7 @@
 package br.com.java_brasil.boleto.service.bancos.sicoob_api.model;
 
 import br.com.java_brasil.boleto.model.BoletoModel;
+import br.com.java_brasil.boleto.model.enums.SituacaoEnum;
 import br.com.java_brasil.boleto.service.bancos.sicoob_api.ConfiguracaoSicoobAPI;
 import br.com.java_brasil.boleto.util.BoletoUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -8,16 +9,33 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Optional;
 
 public class BoletoSicoobModelConverter {
 
-    public static BoletoModel montaBoletoResponse(BoletoModel boletoModel, BoletoSicoobModel boletoSicoobModelResponse) {
-//        boletoModel.setCodRetorno("0");
-//        boletoModel.setMensagemRetorno("gerado com Sucesso");
-//        boletoModel.setCodigoBarras(boletoSicoobResultadoResponse.getCodigoBarras());
-//        boletoModel.setLinhaDigitavel(boletoSicoobResultadoResponse.getLinhaDigitavel());
-//        boletoModel.setSituacaoBoleto(boletoSicoobResultadoResponse.getSituacaoBoleto());
-//        boletoModel.setPdfBoleto(boletoSicoobResultadoResponse.getPdfBoleto());
+    public static BoletoModel montaBoletoResponse(BoletoModel boletoModel, BoletoSicoobBoleto boletoResponse) {
+
+        boletoModel.setCodigoBarras(boletoResponse.getCodigoBarras());
+        boletoModel.setLinhaDigitavel(boletoResponse.getLinhaDigitavel());
+        boletoModel.setImpressaoBase64(boletoResponse.getPdfBoleto());
+
+        if (StringUtils.isBlank(boletoResponse.getSituacaoBoleto())) {
+            boletoModel.setSituacao(SituacaoEnum.EM_ABERTO);
+        } else {
+            switch (boletoResponse.getSituacaoBoleto()) {
+                case "Em Aberto":
+                    boletoModel.setSituacao(SituacaoEnum.EM_ABERTO);
+                    break;
+                case "Baixado":
+                    boletoModel.setSituacao(SituacaoEnum.BAIXADO);
+                    break;
+                case "Liquidado":
+                    boletoModel.setSituacao(SituacaoEnum.LIQUIDADO);
+                    break;
+
+            }
+        }
+
         return boletoModel;
     }
 
@@ -27,48 +45,47 @@ public class BoletoSicoobModelConverter {
      * @param boletoModel
      * @return
      */
-    public static BoletoSicoobModel montaBoletoRequest(BoletoModel boletoModel, ConfiguracaoSicoobAPI configuracaoSicoobAPI) {
-        BoletoSicoobModel resultado = new BoletoSicoobModel();
+    public static BoletoSicoobBoleto montaBoletoRequest(BoletoModel boletoModel, ConfiguracaoSicoobAPI configuracaoSicoobAPI) {
+        BoletoSicoobBoleto boleto = new BoletoSicoobBoleto();
 
-        resultado.setNumeroContrato(configuracaoSicoobAPI.getNumeroContrato());
-        resultado.setModalidade(1);
-        resultado.setNumeroContaCorrente(Integer.valueOf(configuracaoSicoobAPI.getContaCorrente()));
-        resultado.setEspecieDocumento(boletoModel.getEspecieDocumento());
-        resultado.setDataEmissao(BoletoUtil.getDataFormatoYYYYMMDD(LocalDate.now()));
-        resultado.setSeuNumero(12345); //TODO criar
-        resultado.setIdentificacaoEmissaoBoleto(2);
-        resultado.setValor(boletoModel.getValorBoleto().setScale(2, RoundingMode.HALF_UP));
-        resultado.setDataVencimento(BoletoUtil.getDataFormatoYYYYMMDD(boletoModel.getDataVencimento()));
-        resultado.setNumeroParcela(1); //TODO criar
-        resultado.setGerarPdf(true);
+        boleto.setNumeroContrato(configuracaoSicoobAPI.getNumeroContrato());
+        boleto.setModalidade(1);
+        boleto.setNumeroContaCorrente(Integer.valueOf(configuracaoSicoobAPI.getContaCorrente()));
+        boleto.setEspecieDocumento(boletoModel.getEspecieDocumento());
+        boleto.setDataEmissao(BoletoUtil.getDataFormatoYYYYMMDD(LocalDate.now()));
+        boleto.setSeuNumero(Integer.valueOf(boletoModel.getNumeroBoleto()));
+        boleto.setIdentificacaoEmissaoBoleto(2);
+        boleto.setValor(boletoModel.getValorBoleto().setScale(2, RoundingMode.HALF_UP));
+        boleto.setDataVencimento(BoletoUtil.getDataFormatoYYYYMMDD(boletoModel.getDataVencimento()));
+        boleto.setNumeroParcela(Optional.ofNullable(boleto.getNumeroParcela()).orElse(1));
+        boleto.setGerarPdf(true);
 
-        preenchedadosPagador(boletoModel, resultado);
-        preecheDadosBeneficiario(boletoModel, resultado);
-        preencheDadosMultaJuros(boletoModel, resultado);
-        preencheDesconto(boletoModel, resultado);
+        preenchedadosPagador(boletoModel, boleto);
+        preecheDadosBeneficiario(boletoModel, boleto);
+        preencheDadosMultaJuros(boletoModel, boleto);
+        preencheDesconto(boletoModel, boleto);
 
-
-        return resultado;
+        return boleto;
     }
 
-    private static void preencheDesconto(BoletoModel boletoModel, BoletoSicoobModel resultado) {
+    private static void preencheDesconto(BoletoModel boletoModel, BoletoSicoobBoleto boleto) {
         if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorDescontos())) {
-            resultado.setTipoDesconto(1);
-            resultado.setValorPrimeiroDesconto(boletoModel.getValorDescontos().setScale(2, RoundingMode.HALF_UP));
-            resultado.setDataPrimeiroDesconto(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        }else{
-            resultado.setTipoDesconto(0);
+            boleto.setTipoDesconto(1);
+            boleto.setValorPrimeiroDesconto(boletoModel.getValorDescontos().setScale(2, RoundingMode.HALF_UP));
+            boleto.setDataPrimeiroDesconto(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
+        } else {
+            boleto.setTipoDesconto(0);
         }
     }
 
-    private static void preecheDadosBeneficiario(BoletoModel boletoModel, BoletoSicoobModel boletoRequest) {
+    private static void preecheDadosBeneficiario(BoletoModel boletoModel, BoletoSicoobBoleto boletoRequest) {
         BoletoSicoobBeneficiarioFinal beneficiario = new BoletoSicoobBeneficiarioFinal();
         beneficiario.setNumeroCpfCnpj(boletoModel.getBeneficiario().getDocumento());
         beneficiario.setNome(boletoModel.getBeneficiario().getNomeBeneficiario());
         boletoRequest.setBeneficiarioFinal(beneficiario);
     }
 
-    private static void preenchedadosPagador(BoletoModel boletoModel, BoletoSicoobModel boletoRequest) {
+    private static void preenchedadosPagador(BoletoModel boletoModel, BoletoSicoobBoleto boletoRequest) {
         BoletoSicoobPagador pagador = new BoletoSicoobPagador();
 
         pagador.setNumeroCpfCnpj(boletoModel.getPagador().getDocumento());
@@ -85,21 +102,22 @@ public class BoletoSicoobModelConverter {
         boletoRequest.setPagador(pagador);
     }
 
-    private static void preencheDadosMultaJuros(BoletoModel boletoModel, BoletoSicoobModel boletoRequest) {
+    private static void preencheDadosMultaJuros(BoletoModel boletoModel, BoletoSicoobBoleto boletoRequest) {
         if (boletoModel.getDiasJuros() != 0) {
-            //TODO HA TAMBÉM O JUROSMORA, IMPLEMENTAR DEPOIS.
             boletoRequest.setTipoJurosMora(2);
-            LocalDate dataJurosMora = LocalDate.parse(boletoRequest.getDataJurosMora());
-//            boletoRequest.setValorMulta(dataJurosMora.plusDays(boletoModel.getDiasJuros()));
-        }else{
+            boletoRequest.setValorJurosMora(boletoModel.getPercentualJuros().setScale(2, RoundingMode.HALF_UP));
+            boletoRequest.setDataJurosMora(BoletoUtil.getDataFormatoYYYYMMDD(
+                    boletoModel.getDataVencimento().plusDays(boletoModel.getDiasJuros())));
+        } else {
             boletoRequest.setTipoJurosMora(0);
         }
 
         if (boletoModel.getDiasMulta() != 0) {
-            //TODO fazer
-//            boletoRequest.set(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualMulta())));
-//            boletoRequest.setQtdeDiasMulta(Integer.valueOf(String.valueOf(boletoModel.getDiasMulta())));
-        }else{
+            boletoRequest.setTipoMulta(2);
+            boletoRequest.setDataMulta(BoletoUtil.getDataFormatoYYYYMMDD(
+                    boletoModel.getDataVencimento().plusDays(boletoModel.getDiasJuros())));
+            boletoRequest.setValorMulta(boletoModel.getPercentualMulta().setScale(2, RoundingMode.HALF_UP));
+        } else {
             boletoRequest.setTipoMulta(0);
         }
     }

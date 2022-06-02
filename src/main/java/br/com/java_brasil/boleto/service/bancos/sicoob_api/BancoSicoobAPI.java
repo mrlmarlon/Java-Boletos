@@ -3,11 +3,15 @@ package br.com.java_brasil.boleto.service.bancos.sicoob_api;
 import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
-import br.com.java_brasil.boleto.service.bancos.sicoob_api.model.BoletoSicoobModel;
+import br.com.java_brasil.boleto.service.bancos.sicoob_api.model.BoletoSicoobBoleto;
+import br.com.java_brasil.boleto.service.bancos.sicoob_api.model.BoletoSicoobConsultaResponse;
+import br.com.java_brasil.boleto.service.bancos.sicoob_api.model.BoletoSicoobEnvioResponse;
 import br.com.java_brasil.boleto.service.bancos.sicoob_api.model.BoletoSicoobModelConverter;
 import br.com.java_brasil.boleto.util.RestUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicHeader;
@@ -27,8 +31,10 @@ public class BancoSicoobAPI extends BoletoController {
 
     @Override
     public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
-        throw new BoletoException("Não implementado!");
-        //TODO Implementar Impressão
+        return Base64.decodeBase64(
+                Optional.ofNullable(boletoModel.getImpressaoBase64()).orElseThrow(
+                        () -> new BoletoException("Campo ImpressãoBase64 não está preenchido, consulte o boleto para receber a impressão.")
+                ));
     }
 
     @Override
@@ -38,7 +44,7 @@ public class BancoSicoobAPI extends BoletoController {
             ConfiguracaoSicoobAPI configuracao = getConfiguracaoSicoob();
             validaAutenticacao(configuracao);
 
-            BoletoSicoobModel request = BoletoSicoobModelConverter.montaBoletoRequest(boletoModel, configuracao);
+            BoletoSicoobBoleto request = BoletoSicoobModelConverter.montaBoletoRequest(boletoModel, configuracao);
 
             String json = RestUtil.ObjectToJson(Collections.singletonList(request));
             log.debug("Json Envio Boleto: " + json);
@@ -53,8 +59,16 @@ public class BancoSicoobAPI extends BoletoController {
 
             String retorno = RestUtil.validaResponseERetornaBody(response);
             log.debug("Retorno Envio Boleto: " + retorno);
+            BoletoSicoobEnvioResponse boletoSicoobResponse = RestUtil.JsonToObject(retorno, BoletoSicoobEnvioResponse.class);
 
-            return null;
+            BoletoSicoobBoleto boletoResponse = boletoSicoobResponse.getResultado().get(0).getBoleto();
+
+            if(boletoResponse == null){
+                throw new BoletoException("Erro ao enviar boleto, código erro: "+ boletoSicoobResponse.getResultado().get(0).getStatus().getCodigo());
+            }
+
+            return BoletoSicoobModelConverter.montaBoletoResponse(boletoModel, boletoResponse);
+
         } catch (Exception e) {
             throw new BoletoException(e.getMessage(), e);
         }
@@ -71,25 +85,42 @@ public class BancoSicoobAPI extends BoletoController {
 
     @Override
     public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
-        ConfiguracaoSicoobAPI configuracao = (ConfiguracaoSicoobAPI) getConfiguracao();
-
-        validaAutenticacao(configuracao);
-
-        Header[] headers = {
-                new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
-                new BasicHeader(AUTHORIZATION, "Bearer " + configuracao.getToken()),
-        };
-
-        CloseableHttpResponse response = RestUtil.get(configuracao.getURLBase() + configuracao.getUrlConsultaBoleto(), headers);
-
         try {
+            ConfiguracaoSicoobAPI configuracao = (ConfiguracaoSicoobAPI) getConfiguracao();
+
+            validaAutenticacao(configuracao);
+
+            Header[] headers = {
+                    new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
+                    new BasicHeader(AUTHORIZATION, "Bearer " + configuracao.getToken()),
+            };
+
+            String parametros = "?numeroContrato=" + configuracao.getNumeroContrato();
+            parametros += "modalidade=1";
+
+            if (boletoModel.getBeneficiario() != null &&
+                    StringUtils.isNotBlank(boletoModel.getBeneficiario().getNossoNumero())) {
+                parametros += "nossoNumero=" + boletoModel.getBeneficiario().getNossoNumero();
+            } else if (StringUtils.isNotBlank(boletoModel.getLinhaDigitavel())) {
+                parametros += "linhaDigitavel=" + boletoModel.getLinhaDigitavel();
+            } else if (StringUtils.isNotBlank(boletoModel.getCodigoBarras())) {
+                parametros += "linhaDigitavel=" + boletoModel.getCodigoBarras();
+            }
+
+            CloseableHttpResponse response = RestUtil.get(
+                    configuracao.getURLBase() +
+                            configuracao.getUrlConsultaBoleto() +
+                            parametros, headers);
+
             String retorno = RestUtil.validaResponseERetornaBody(response);
             log.debug("Retorno Consulta Boleto: " + retorno);
+            BoletoSicoobConsultaResponse boletoSicoobResponse = RestUtil.JsonToObject(retorno, BoletoSicoobConsultaResponse.class);
+
+            return BoletoSicoobModelConverter.montaBoletoResponse(boletoModel, boletoSicoobResponse.getResultado());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BoletoException(e.getMessage(), e);
         }
-        return null;
     }
 
     private void validaAutenticacao(ConfiguracaoSicoobAPI configuracao) {

@@ -1,18 +1,31 @@
 package br.com.java_brasil.boleto.service.bancos.bradesco_api;
 
-import br.com.java_brasil.boleto.exception.BoletoException;
-import br.com.java_brasil.boleto.model.BoletoController;
-import br.com.java_brasil.boleto.model.BoletoModel;
-import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIRequest;
-import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIResponse;
-import br.com.java_brasil.boleto.util.BoletoUtil;
-import br.com.java_brasil.boleto.util.RestUtil;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.http.HttpHeaders.USER_AGENT;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.print.PrintService;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,18 +37,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import static org.apache.http.HttpHeaders.*;
+import br.com.java_brasil.boleto.exception.BoletoException;
+import br.com.java_brasil.boleto.model.BoletoController;
+import br.com.java_brasil.boleto.model.BoletoModel;
+import br.com.java_brasil.boleto.model.RemessaRetornoModel;
+import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIRequest;
+import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIResponse;
+import br.com.java_brasil.boleto.util.BoletoUtil;
+import br.com.java_brasil.boleto.util.RestUtil;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Classe Generica para servir como base de Implementação
@@ -47,6 +63,17 @@ public class BancoBradescoAPI extends BoletoController {
     public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
         //TODO Implementar Impressão
+    }
+
+    @Override
+    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                      PrintService printService) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
     @Override
@@ -190,14 +217,30 @@ public class BancoBradescoAPI extends BoletoController {
     }
 
     @Override
-    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel alterarBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
     @Override
-    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel consultarBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
+
+    @Override
+    public BoletoModel baixarBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
+    @Override
+    public String gerarArquivoRemessa(@NonNull List<RemessaRetornoModel> remessaRetornoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
+    @Override
+    public List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
 
     /**
      * Converte BoletoModel para o padrão de entrada da API
@@ -223,17 +266,17 @@ public class BancoBradescoAPI extends BoletoController {
         boletoRequest.setControleParticipante(boletoModel.getPagador().getCodigo());
 
         if (boletoModel.getDiasJuros() != 0) {
-            boletoRequest.setPercentualJuros(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualJuros())));
+            boletoRequest.setPercentualJuros(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getValorPercentualJuros())));
             boletoRequest.setQtdeDiasJuros(boletoModel.getDiasJuros());
         }
 
         if (boletoModel.getDiasMulta() != 0) {
-            boletoRequest.setPercentualMulta(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualMulta())));
+            boletoRequest.setPercentualMulta(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getValorPercentualMulta())));
             boletoRequest.setQtdeDiasMulta(Integer.valueOf(String.valueOf(boletoModel.getDiasMulta())));
         }
 
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorDescontos())) {
-            boletoRequest.setVlDesconto1(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorDescontos(), 2)));
+        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorPercentualDescontos())) {
+            boletoRequest.setVlDesconto1(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorPercentualDescontos(), 2)));
             boletoRequest.setDataLimiteDesconto1(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
         }
 
@@ -253,4 +296,6 @@ public class BancoBradescoAPI extends BoletoController {
 
         return boletoRequest;
     }
+
+
 }

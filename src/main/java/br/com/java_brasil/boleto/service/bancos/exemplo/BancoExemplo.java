@@ -3,7 +3,11 @@ package br.com.java_brasil.boleto.service.bancos.exemplo;
 import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
+import br.com.java_brasil.boleto.model.RemessaRetornoModel;
 import lombok.NonNull;
+
+import javax.print.PrintService;
+import java.util.List;
 
 /**
  * Classe Generica para servir como base de Implementação
@@ -21,12 +25,38 @@ public class BancoExemplo extends BoletoController {
     }
 
     @Override
-    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel alterarBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
     }
 
     @Override
-    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel consultarBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public BoletoModel baixarBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public String gerarArquivoRemessa(@NonNull List<RemessaRetornoModel> remessaRetornoModel) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                      PrintService printService) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
     }
 }

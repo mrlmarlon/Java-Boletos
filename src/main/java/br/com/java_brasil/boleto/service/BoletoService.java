@@ -1,11 +1,11 @@
 package br.com.java_brasil.boleto.service;
 
-import br.com.java_brasil.boleto.model.BoletoBanco;
-import br.com.java_brasil.boleto.model.BoletoController;
-import br.com.java_brasil.boleto.model.BoletoModel;
-import br.com.java_brasil.boleto.model.Configuracao;
+import br.com.java_brasil.boleto.model.*;
 import br.com.java_brasil.boleto.util.ValidaUtils;
 import lombok.NonNull;
+
+import javax.print.PrintService;
+import java.util.List;
 
 public class BoletoService implements MetodosGenericos {
 
@@ -23,23 +23,49 @@ public class BoletoService implements MetodosGenericos {
     }
 
     @Override
+    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                      PrintService printService) {
+        this.controller.imprimirBoletoDesktop(boletoModel, diretoImpressora, printService);
+    }
+
+    @Override
+    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+        return this.controller.emitirBoleto(boletoModel);
+    }
+
+    @Override
     public BoletoModel enviarBoleto(@NonNull BoletoModel boletoModel) {
         ValidaUtils.validaBoletoModel(boletoModel, this.controller.getConfiguracao().camposObrigatoriosBoleto());
         return this.controller.enviarBoleto(boletoModel);
     }
 
     @Override
-    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel alterarBoleto(@NonNull BoletoModel boletoModel) {
         ValidaUtils.validaBoletoModel(boletoModel, this.controller.getConfiguracao().camposObrigatoriosBoleto());
-        return this.controller.alteraBoleto(boletoModel);
+        return this.controller.alterarBoleto(boletoModel);
     }
 
     @Override
-    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
-        return this.controller.consultaBoleto(boletoModel);
+    public BoletoModel consultarBoleto(@NonNull BoletoModel boletoModel) {
+        return this.controller.consultarBoleto(boletoModel);
+    }
+
+    @Override
+    public BoletoModel baixarBoleto(@NonNull BoletoModel boletoModel) {
+        return this.controller.baixarBoleto(boletoModel);
     }
 
     public Configuracao getConfiguracao(){
         return this.controller.getConfiguracao();
+    }
+
+    @Override
+    public String gerarArquivoRemessa(@NonNull List<RemessaRetornoModel> remessaRetornoModel) {
+        return this.controller.gerarArquivoRemessa(remessaRetornoModel);
+    }
+
+    @Override
+    public List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo) {
+        return this.controller.importarArquivoRetorno(arquivo);
     }
 }

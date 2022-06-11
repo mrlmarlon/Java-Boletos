@@ -110,7 +110,8 @@ public final class RestUtil {
     public static String validaResponseERetornaBody(CloseableHttpResponse response) throws IOException {
         if (response.getStatusLine().getStatusCode() != 200 &&
                 response.getStatusLine().getStatusCode() != 201 &&
-                response.getStatusLine().getStatusCode() != 202) {
+                response.getStatusLine().getStatusCode() != 202 &&
+                response.getStatusLine().getStatusCode() != 207) {
             String erro = response.getStatusLine().getStatusCode() + " - " + EntityUtils.toString(response.getEntity(), "UTF-8");
             throw new RestException(erro);
         }

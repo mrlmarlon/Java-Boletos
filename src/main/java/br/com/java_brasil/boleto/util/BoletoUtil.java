@@ -97,6 +97,10 @@ public class BoletoUtil {
         return data.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
+    public static String getDataFormatoYYYYMMDD(LocalDate data){
+        return data.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
     /**
      * Retorna a String da data De Acordo com o pattern
      *

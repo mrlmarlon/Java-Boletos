@@ -1,5 +1,6 @@
 package br.com.java_brasil.boleto.model;
 
+import br.com.java_brasil.boleto.model.enums.SituacaoEnum;
 import br.com.java_brasil.boleto.model.enums.TipoDescontoEnum;
 import br.com.java_brasil.boleto.model.enums.TipoJurosEnum;
 import br.com.java_brasil.boleto.model.enums.TipoMultaEnum;
@@ -20,6 +21,13 @@ public class BoletoModel implements Serializable {
     protected String numeroDocumento;
     protected LocalDate dataVencimento;
     protected BigDecimal valorBoleto;
+    protected BigDecimal valorDescontos = BigDecimal.ZERO;
+    protected BigDecimal valorDeducoes = BigDecimal.ZERO;
+    protected BigDecimal valorMulta = BigDecimal.ZERO;
+    protected BigDecimal valorAcrescimos = BigDecimal.ZERO;
+    protected BigDecimal valorCobrado = BigDecimal.ZERO;
+    protected BigDecimal percentualJuros;
+    protected BigDecimal percentualMulta;
     protected String especieDocumento;
     protected LocalDate dataEmissao;
     protected BigDecimal valorIof;
@@ -46,6 +54,10 @@ public class BoletoModel implements Serializable {
     protected int diasParaBaixaDevolver;
     protected String especieMoeda;
     protected int codigoEspecieMoeda;
+
+    protected Integer parcela;
+    protected String especieDocumento;
+    protected String numeroBoleto;
     protected Pagador pagador;
     protected Pagador beneficiarioFinal; //Avalista
     protected Beneficiario beneficiario;
@@ -53,6 +65,7 @@ public class BoletoModel implements Serializable {
     protected List<InformacaoModel> descricoes = Collections.emptyList();
     protected List<InformacaoModel> locaisDePagamento = Collections.emptyList();
     protected String codigoBarras;
+    protected String linhaDigitavel;
     protected String linhaDigitavel;
     protected boolean autorizaPagamentoParcial;
     protected int codigoPagamentoParcial;
@@ -67,6 +80,9 @@ public class BoletoModel implements Serializable {
     protected int numeroTotalDeParcelasCarne;
     protected String codRetorno;
     protected String mensagemRetorno;
+    protected String localPagamento;
+    protected String impressaoBase64;
+    protected SituacaoEnum situacao;
     protected String pixTxidQrCode;
     protected String pixUrlQrCode;
     protected String pixCopiaCola;

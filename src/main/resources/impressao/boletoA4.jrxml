@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="boleto-default" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="7" uuid="ff653490-88f9-4546-aaa6-53f137c26ccc">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -38,32 +38,20 @@
 	<field name="documentoBeneficiario" class="java.lang.String">
 		<fieldDescription><![CDATA[cpfcnpjBeneficiario]]></fieldDescription>
 	</field>
-	<field name="nomeBeneficiario" class="java.lang.String">
-		<fieldDescription><![CDATA[nomeBeneficiario]]></fieldDescription>
-	</field>
-	<field name="enderecoBeneficiario" class="java.lang.String">
-		<fieldDescription><![CDATA[enderecoBeneficiarioCompleto]]></fieldDescription>
-	</field>
-	<field name="nomePagador" class="java.lang.String">
-		<fieldDescription><![CDATA[nomePagador]]></fieldDescription>
-	</field>
-	<field name="vencimento" class="java.lang.String">
+	<field name="dataVencimento" class="java.time.LocalDate">
 		<fieldDescription><![CDATA[dtVencimentoBoleto]]></fieldDescription>
 	</field>
 	<field name="valorCobrado" class="java.lang.Long">
 		<fieldDescription><![CDATA[vlTitulo]]></fieldDescription>
 	</field>
-	<field name="agenciaECodigoBeneficiario" class="java.lang.String">
-		<fieldDescription><![CDATA[agenciaECodigoBeneficiario]]></fieldDescription>
+	<field name="numeroDocumento" class="java.lang.String">
+		<fieldDescription><![CDATA[numeroDocumento]]></fieldDescription>
 	</field>
-	<field name="nossoNumeroECodDocumento" class="java.lang.String">
-		<fieldDescription><![CDATA[nossoNumeroECodDocumento]]></fieldDescription>
-	</field>
-	<field name="documento" class="java.lang.String">
-		<fieldDescription><![CDATA[dtEmissao]]></fieldDescription>
+	<field name="dataEmissao" class="java.time.LocalDate">
+		<fieldDescription><![CDATA[dataEmissao]]></fieldDescription>
 	</field>
 	<field name="especieDocumento" class="java.lang.String">
-		<fieldDescription><![CDATA[especieDocumentoTitulo]]></fieldDescription>
+		<fieldDescription><![CDATA[especieDocumento]]></fieldDescription>
 	</field>
 	<field name="especieMoeda" class="java.lang.String">
 		<fieldDescription><![CDATA[codigoMoedaTitulo]]></fieldDescription>
@@ -71,7 +59,7 @@
 	<field name="valorBoleto" class="java.lang.Long">
 		<fieldDescription><![CDATA[vlTitulo]]></fieldDescription>
 	</field>
-	<field name="instrucoes" class="java.lang.String">
+	<field name="instrucoes" class="java.util.List">
 		<fieldDescription><![CDATA[instrucoes]]></fieldDescription>
 	</field>
 	<field name="valorDescontos" class="java.lang.Long">
@@ -83,32 +71,11 @@
 	<field name="logo_banco" class="java.io.InputStream">
 		<fieldDescription><![CDATA[logotipo]]></fieldDescription>
 	</field>
-	<field name="logradouroPagador" class="java.lang.String">
-		<fieldDescription><![CDATA[enderecoPagador]]></fieldDescription>
+	<field name="localPagamento" class="java.lang.String">
+		<fieldDescription><![CDATA[localPagamento]]></fieldDescription>
 	</field>
-	<field name="documentoPagador" class="java.lang.Long">
-		<fieldDescription><![CDATA[cpfcnpjPagador]]></fieldDescription>
-	</field>
-	<field name="cepPagador" class="java.lang.String">
-		<fieldDescription><![CDATA[cepCompletoPagador]]></fieldDescription>
-	</field>
-	<field name="bairroPagador" class="java.lang.String">
-		<fieldDescription><![CDATA[bairroPagador]]></fieldDescription>
-	</field>
-	<field name="cidadePagador" class="java.lang.String">
-		<fieldDescription><![CDATA[municipioPagador]]></fieldDescription>
-	</field>
-	<field name="ufPagador" class="java.lang.String">
-		<fieldDescription><![CDATA[ufPagador]]></fieldDescription>
-	</field>
-	<field name="localDePagamento" class="java.lang.String">
-		<fieldDescription><![CDATA[localDePagamento]]></fieldDescription>
-	</field>
-	<field name="linhaDigitavel" class="java.lang.String">
-		<fieldDescription><![CDATA[linhaDigitavel]]></fieldDescription>
-	</field>
-	<field name="codigoDeBarras" class="java.lang.String">
-		<fieldDescription><![CDATA[cdBarras]]></fieldDescription>
+	<field name="codigoBarras" class="java.lang.String">
+		<fieldDescription><![CDATA[codigoBarras]]></fieldDescription>
 	</field>
 	<field name="carteira" class="java.lang.String">
 		<fieldDescription><![CDATA[carteira]]></fieldDescription>
@@ -119,6 +86,8 @@
 	<field name="logo_banco2" class="java.io.InputStream">
 		<fieldDescription><![CDATA[logotipo2]]></fieldDescription>
 	</field>
+	<field name="pagador" class="br.com.java_brasil.boleto.model.Pagador"/>
+	<field name="beneficiario" class="br.com.java_brasil.boleto.model.Beneficiario"/>
 	<detail>
 		<band height="746" splitType="Prevent">
 			<property name="com.jaspersoft.studio.layout"/>
@@ -140,7 +109,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nomeBeneficiario}+ "  CPF/CNPJ: " + $F{documentoBeneficiario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getNomeBeneficiario()+ "  CPF/CNPJ: " + $F{beneficiario}.getDocumento()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="1" y="316" width="552" height="14" uuid="71cf9bf4-c08d-4f0f-b701-cc366ddd6c3a"/>
@@ -150,7 +119,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{enderecoBeneficiario} == null ? "" : $F{enderecoBeneficiario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getEndereco().getLogradouro() + ", " + ($F{beneficiario}.getEndereco().getBairro()  == null ? "" : $F{beneficiario}.getEndereco().getBairro() + ", CEP: ") + ($F{beneficiario}.getEndereco().getCep() == null ? "" : $F{beneficiario}.getEndereco().getCep()) + ($F{beneficiario}.getEndereco().getCidade() == null ? "" : " - "+$F{beneficiario}.getEndereco().getCidade() + "-") + ($F{beneficiario}.getEndereco().getUf() == null ? "" : $F{beneficiario}.getEndereco().getUf())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="250" y="268" width="100" height="10" uuid="53596950-7e80-4223-9cee-2019bc5f3706"/>
@@ -180,7 +149,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤#,##0.00;¤-#,##0.00" isBlankWhenNull="true">
 				<reportElement style="Txt_valor" positionType="FixRelativeToBottom" x="450" y="278" width="103" height="14" uuid="1d5919bf-162d-49ff-8b7d-43d64d2a71b8"/>
@@ -221,7 +190,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{agenciaECodigoBeneficiario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getAgencia() + "/" + $F{beneficiario}.getConta()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="1" y="278" width="145" height="14" uuid="0a386697-5190-4930-a3e4-dada92f6d225"/>
@@ -231,7 +200,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nossoNumeroECodDocumento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getNossoNumero()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="178" y="463" width="60" height="14" uuid="02d3cdee-746c-4588-a51b-9c5f37f330f9"/>
@@ -250,7 +219,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nomeBeneficiario} + "       CPF/CNPJ: " + $F{documentoBeneficiario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getNomeBeneficiario()+ "  CPF/CNPJ: " + $F{beneficiario}.getDocumento()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="477" width="85" height="25" uuid="c95c3b44-8c8c-42ca-ba0b-cbbd70c2b4cd"/>
@@ -281,7 +250,7 @@
 				<textElement textAlignment="Right" markup="none">
 					<font size="13"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{linhaDigitavel}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codigoBarras}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="429" width="389" height="10" uuid="8117e3e7-4e84-4b30-b71f-4b251a9d81dd"/>
@@ -301,7 +270,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{fatura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{numeroDocumento}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="239" y="463" width="61" height="14" uuid="460aeeaa-3a27-4aec-b18b-68524ff57b75"/>
@@ -385,7 +354,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{localDePagamento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{localPagamento}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" mode="Transparent" x="391" y="429" width="162" height="10" uuid="d17ced91-6210-4152-8e54-1533c773b6fa"/>
@@ -421,7 +390,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{logradouroPagador} + ", " + ($F{bairroPagador} == null ? "" : $F{bairroPagador} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pagador}.getEndereco().getLogradouro() + ", " + $F{pagador}.getEndereco().getBairro()  == null ? "" : $F{pagador}.getEndereco().getBairro()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" mode="Transparent" x="391" y="526" width="162" height="10" uuid="1dea584a-47c2-4b4f-af48-0dd9176d8cf0"/>
@@ -440,7 +409,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA["CEP: " + ($F{cepPagador} == null ? "" : $F{cepPagador}) + ($F{cidadePagador} == null ? "" : " - "+$F{cidadePagador} + "-") + ($F{ufPagador} == null ? "" : $F{ufPagador})]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CEP: " + ($F{pagador}.getEndereco().getCep() == null ? "" : $F{pagador}.getEndereco().getCep()) + ($F{pagador}.getEndereco().getCidade() == null ? "" : " - "+$F{pagador}.getEndereco().getCidade() + "-") + ($F{pagador}.getEndereco().getUf() == null ? "" : $F{pagador}.getEndereco().getUf())]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="87" y="487" width="90" height="15" uuid="521e7c14-d377-42dd-b770-a2ee0dad878b"/>
@@ -448,16 +417,16 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{carteira}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getCarteira()]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement style="Txt_Data" positionType="FixRelativeToBottom" x="301" y="463" width="89" height="14" uuid="b50cf889-5f4f-490c-9866-1aae93f3fe4e"/>
 				<box topPadding="2" leftPadding="10" bottomPadding="2" rightPadding="2">
 					<leftPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{documento}.substring(0,2)+"/"+$F{documento}.substring(2,4)+"/"+$F{documento}.substring(4)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dataEmissao}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="453" width="85" height="10" uuid="3a08b48d-7aff-418f-beb0-385b0580d7b5"/>
@@ -477,7 +446,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{agenciaECodigoBeneficiario}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getAgencia() + "/" + $F{beneficiario}.getConta()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="301" y="453" width="89" height="10" uuid="f030d527-74ed-46e3-9165-eb498cb0d8e7"/>
@@ -500,7 +469,7 @@
 			<componentElement>
 				<reportElement positionType="FixRelativeToBottom" x="9" y="700" width="371" height="46" uuid="0af69d88-8b52-4ecc-aaae-c2e7cf75cb7a"/>
 				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Int2of5" drawText="false" checksumRequired="false" barWidth="0" barHeight="0">
-					<jr:codeExpression><![CDATA[$F{codigoDeBarras}]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA[$F{codigoBarras}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
 			<image vAlign="Bottom" onErrorType="Blank">
@@ -528,7 +497,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{documento}.substring(0,2)+"/"+$F{documento}.substring(2,4)+"/"+$F{documento}.substring(4)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dataEmissao}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="239" y="453" width="61" height="10" uuid="90a931e7-b2a0-4b05-9df6-6e3830695f7d"/>
@@ -557,7 +526,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nossoNumeroECodDocumento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{beneficiario}.getNossoNumero()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="502" width="389" height="10" uuid="e8d29361-12cd-4e98-a29a-88ceb7b4e383"/>
@@ -613,7 +582,7 @@
 				<textElement textAlignment="Right" markup="none">
 					<font size="13"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{linhaDigitavel}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{codigoBarras}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="220" width="552" height="10" uuid="d1f59c9d-2758-4686-a6f0-8775592ce8a3"/>
@@ -633,7 +602,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nomePagador} + "  CPF/CNPJ: " + $F{documentoPagador}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pagador}.getNome() + "  CPF/CNPJ: " + $F{pagador}.getDocumento()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement style="Txt_Normal" positionType="FixRelativeToBottom" x="1" y="244" width="552" height="14" uuid="c81de9ba-7219-4bcf-96a4-942c7261b77f"/>
@@ -643,7 +612,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{logradouroPagador} + ", " + ($F{bairroPagador} == null ? "" : $F{bairroPagador} + ", CEP: ") + ($F{cepPagador} == null ? "" : $F{cepPagador}) + ($F{cidadePagador} == null ? "" : " - "+$F{cidadePagador} + "-") + ($F{ufPagador} == null ? "" : $F{ufPagador})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pagador}.getEndereco().getLogradouro() + ", " + ($F{pagador}.getEndereco().getBairro()  == null ? "" : $F{pagador}.getEndereco().getBairro() + ", CEP: ") + ($F{pagador}.getEndereco().getCep() == null ? "" : $F{pagador}.getEndereco().getCep()) + ($F{pagador}.getEndereco().getCidade() == null ? "" : " - "+$F{pagador}.getEndereco().getCidade() + "-") + ($F{pagador}.getEndereco().getUf() == null ? "" : $F{pagador}.getEndereco().getUf())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="258" width="552" height="10" uuid="fdebbdf3-1e42-4b09-9e5d-98ebe63bfa0b"/>
@@ -664,7 +633,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{fatura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{numeroDocumento}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="147" y="268" width="102" height="10" uuid="b6038914-9f59-4be6-bc12-542aba502a66"/>
@@ -715,7 +684,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dataVencimento}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" mode="Transparent" x="391" y="477" width="162" height="10" uuid="4d45ea42-0253-4203-b167-c0e6ea56a516"/>
@@ -782,7 +751,7 @@
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{nomePagador} + "  CPF/CNPJ: " + $F{documentoPagador}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pagador}.getNome() + "  CPF/CNPJ: " + $F{pagador}.getDocumento()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="Celula" positionType="FixRelativeToBottom" x="1" y="678" width="552" height="10" uuid="a1b0595a-3739-419a-9fb5-c34035dbcd4e"/>

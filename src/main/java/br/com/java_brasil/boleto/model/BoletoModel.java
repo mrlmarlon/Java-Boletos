@@ -1,5 +1,6 @@
 package br.com.java_brasil.boleto.model;
 
+import br.com.java_brasil.boleto.model.enums.SituacaoEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class BoletoModel implements Serializable {
     protected BigDecimal valorDeducoes = BigDecimal.ZERO;
     protected BigDecimal valorMulta = BigDecimal.ZERO;
     protected BigDecimal valorAcrescimos = BigDecimal.ZERO;
+    protected BigDecimal valorCobrado = BigDecimal.ZERO;
     protected BigDecimal percentualJuros;
     protected BigDecimal percentualMulta;
     protected int diasJuros;
@@ -27,8 +29,10 @@ public class BoletoModel implements Serializable {
     protected LocalDate dataVencimento;
     protected String especieMoeda;
     protected int codigoEspecieMoeda;
+
+    protected Integer parcela;
     protected String especieDocumento;
-    protected String numeroDocumento;
+    protected String numeroBoleto;
     protected Pagador pagador;
     protected boolean aceite;
     protected Beneficiario beneficiario;
@@ -36,7 +40,11 @@ public class BoletoModel implements Serializable {
     protected List<String> descricoes = Collections.emptyList();
     protected List<String> locaisDePagamento = Collections.emptyList();
     protected String codigoBarras;
+    protected String linhaDigitavel;
     protected String codRetorno;
     protected String mensagemRetorno;
+    protected String localPagamento;
+    protected String impressaoBase64;
+    protected SituacaoEnum situacao;
 
 }

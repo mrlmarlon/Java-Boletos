@@ -5,6 +5,7 @@ import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIRequest;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIResponse;
+import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoModelConverter;
 import br.com.java_brasil.boleto.util.BoletoUtil;
 import br.com.java_brasil.boleto.util.RestUtil;
 import com.google.gson.JsonObject;
@@ -15,7 +16,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -31,9 +31,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 import static org.apache.http.HttpHeaders.*;
 
@@ -54,9 +56,9 @@ public class BancoBradescoAPI extends BoletoController {
 
         try {
 
-            BoletoBradescoAPIRequest boletoBradescoAPIRequest = montaBoletoRequest(boletoModel);
+            BoletoBradescoAPIRequest boletoBradescoAPIRequest = BoletoBradescoModelConverter.montaBoletoRequest(boletoModel);
             BoletoBradescoAPIResponse boletoBradescoAPIResponse = registraBoleto(boletoBradescoAPIRequest);
-            return montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
+            return BoletoBradescoModelConverter.montaBoletoResponse(boletoModel, boletoBradescoAPIResponse);
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | SignatureException | InvalidKeyException e) {
             throw new BoletoException(e.getMessage(), e);
@@ -129,13 +131,6 @@ public class BancoBradescoAPI extends BoletoController {
         return RestUtil.JsonToObject(retorno, BoletoBradescoAPIResponse.class);
     }
 
-    private BoletoModel montaBoletoResponse(BoletoModel boletoModel, BoletoBradescoAPIResponse boletoBradescoAPIResponse) {
-        boletoModel.setCodRetorno(boletoBradescoAPIResponse.getCodigoRetorno());
-        boletoModel.setMensagemRetorno(boletoBradescoAPIResponse.getMensagemRetorno());
-        boletoModel.setCodigoBarras(boletoBradescoAPIResponse.getCdBarras());
-        return boletoModel;
-    }
-
     public String getToken(ConfiguracaoBradescoAPI configuracao) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 
         Header[] headers = {
@@ -199,58 +194,4 @@ public class BancoBradescoAPI extends BoletoController {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
-    /**
-     * Converte BoletoModel para o padrão de entrada da API
-     *
-     * @param boletoModel
-     * @return
-     */
-    private BoletoBradescoAPIRequest montaBoletoRequest(BoletoModel boletoModel) {
-        BoletoBradescoAPIRequest boletoRequest = new BoletoBradescoAPIRequest();
-        boletoRequest.setAgenciaDestino(Integer.valueOf(boletoModel.getBeneficiario().getAgencia()));
-        boletoRequest.setNuCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(0, 8)));
-        boletoRequest.setFilialCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(8, 12)));
-        boletoRequest.setCtrlCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(boletoModel.getBeneficiario().getDocumento().length() - 2)));
-        boletoRequest.setIdProduto(Integer.valueOf(boletoModel.getBeneficiario().getCarteira()));
-        boletoRequest.setNuNegociacao(
-                Long.valueOf(StringUtils.leftPad(boletoModel.getBeneficiario().getAgencia(), 4, '0') +
-                        "0000000" +
-                        StringUtils.leftPad(boletoModel.getBeneficiario().getConta(), 7, '0')));
-        boletoRequest.setNuCliente(boletoModel.getPagador().getCodigo());
-        boletoRequest.setDtEmissaoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(LocalDate.now()));
-        boletoRequest.setDtVencimentoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        boletoRequest.setVlNominalTitulo(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorBoleto(), 2)));
-        boletoRequest.setControleParticipante(boletoModel.getPagador().getCodigo());
-
-        if (boletoModel.getDiasJuros() != 0) {
-            boletoRequest.setPercentualJuros(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualJuros())));
-            boletoRequest.setQtdeDiasJuros(boletoModel.getDiasJuros());
-        }
-
-        if (boletoModel.getDiasMulta() != 0) {
-            boletoRequest.setPercentualMulta(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getPercentualMulta())));
-            boletoRequest.setQtdeDiasMulta(Integer.valueOf(String.valueOf(boletoModel.getDiasMulta())));
-        }
-
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorDescontos())) {
-            boletoRequest.setVlDesconto1(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorDescontos(), 2)));
-            boletoRequest.setDataLimiteDesconto1(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        }
-
-        boletoRequest.setNomePagador(BoletoUtil.limitarTamanhoString(boletoModel.getPagador().getNome(), 70));
-        boletoRequest.setLogradouroPagador(boletoModel.getPagador().getEndereco().getLogradouro());
-        boletoRequest.setNuLogradouroPagador(boletoModel.getPagador().getEndereco().getNumero());
-        boletoRequest.setComplementoLogradouroPagador(BoletoUtil.limitarTamanhoString(
-                Optional.ofNullable(boletoModel.getPagador().getEndereco().getComplemento()).orElse(""), 15));
-        boletoRequest.setCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(0, 5)));
-        boletoRequest.setComplementoCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(5)));
-        boletoRequest.setBairroPagador(boletoModel.getPagador().getEndereco().getBairro());
-        boletoRequest.setMunicipioPagador(boletoModel.getPagador().getEndereco().getCidade());
-        boletoRequest.setUfPagador(boletoModel.getPagador().getEndereco().getUf());
-        boletoRequest.setCdIndCpfcnpjPagador(boletoModel.getPagador().isClienteCpf() ? 1 : 2);
-        boletoRequest.setNuCpfcnpjPagador(Long.valueOf(StringUtils.leftPad(boletoModel.getPagador().getDocumento(), 14, '0')));
-        boletoRequest.setEndEletronicoPagador(Optional.ofNullable(boletoModel.getPagador().getEmail()).orElse(""));
-
-        return boletoRequest;
-    }
 }

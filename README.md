@@ -41,9 +41,13 @@ Veja a Wiki https://github.com/Java-Brasil/Java-Boletos/wiki, para ter um Tutori
 ________________________________________________________________________________________________
 
 ## Boletos/Bancos Desenvolvidos
-| **Banco / Entidade** | **Tipo** |**Envio**|**Alteração**|**Consulta**|**Impressão**|
-|------------------|------|-----|---------------|-----|-----|
-| Bradesco| API|✅| ❌|❌|🕐|
+| **Banco / Entidade** | **Tipo** |**Envio**|**Alteração**|**Consulta**|**Baixa**|**Impressão**|
+|----------------------|----------|-----|---------------|-----|-----|-----|
+| Bradesco             | API      |✅| ❌|❌|❌|🕐|
+| Sicoob               | API      |✅| ❌|✅|❌|✅|
+| BanriSul             | API      |✅| ✅|✅|✅|✅|
+| Sicoob               | CNAB 240 |✅| ✅|✅|✅|✅|
+| Sicred               | CNAB 400 |✅| ✅|✅|✅|✅|
 
 ________________________________________________________________________________________________
 
@@ -53,3 +57,6 @@ ________________________________________________________________________________
 - Versão Inicial
 - Adicionado Bradesco API
 - Adicionado Sicoob API
+- Adicionado Banrisul API
+- Adicionado Sicoob CNAB 240
+- Adicionado Sicred CNAB 400

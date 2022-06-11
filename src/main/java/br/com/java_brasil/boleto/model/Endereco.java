@@ -17,4 +17,7 @@ public class Endereco implements Serializable {
     private String uf;
     private String complemento;
 
+    public String getEnderecoCompleto(){
+        return logradouro + ", " + numero + (complemento == null ? "" : " " + complemento);
+    }
 }

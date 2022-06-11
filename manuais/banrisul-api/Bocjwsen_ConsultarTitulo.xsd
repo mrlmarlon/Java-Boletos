@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+        elementFormDefault="qualified"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="Bergs.Boc.Bocswsxn"
+        xmlns="Bergs.Boc.Bocswsxn">
+    <xsd:element name="dados">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="titulo" type="titulo" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="ocorrencias" type="ocorrencias" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="retorno" type="xsd:short" />
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="titulo">
+        <xsd:all>
+            <xsd:element name="beneficiario" type="beneficiario" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="pagador" type="pagador" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="instrucoes" type="instrucoes" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="pag_parcial" type="pag_parcial" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="mensagens" type="mensagens" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="rateio" type="rateio" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="operacoes" type="operacoes" minOccurs="0" maxOccurs="1" />
+        </xsd:all>
+        <xsd:attribute name="nosso_numero" type="xsd:long" />
+        <xsd:attribute name="seu_numero" type="xsd:string" />
+        <xsd:attribute name="data_vencimento" type="xsd:date" />
+        <xsd:attribute name="valor_nominal" type="xsd:decimal" />
+        <xsd:attribute name="especie" type="xsd:short" />
+        <xsd:attribute name="data_emissao" type="xsd:date" />
+        <xsd:attribute name="valor_iof" type="xsd:decimal" />
+        <xsd:attribute name="id_titulo_empresa" type="xsd:string" />
+        <xsd:attribute name="codigo_barras" type="xsd:string" />
+        <xsd:attribute name="linha_digitavel" type="xsd:string" />
+        <xsd:attribute name="situacao_banrisul" type="xsd:string" />
+        <xsd:attribute name="situacao_cip" type="xsd:string" />
+        <xsd:attribute name="situacao_pagamento" type="xsd:short" />
+        <xsd:attribute name="carteira" type="xsd:short" />
+    </xsd:complexType>
+    <xsd:complexType name="beneficiario">
+        <xsd:attribute name="codigo" type="xsd:long" use="required" />
+        <xsd:attribute name="tipo_pessoa" type="xsd:string" />
+        <xsd:attribute name="cpf_cnpj" type="xsd:long" />
+        <xsd:attribute name="nome" type="xsd:string" />
+        <xsd:attribute name="nome_fantasia" type="xsd:string" />
+    </xsd:complexType>
+    <xsd:complexType name="pagador">
+        <xsd:attribute name="tipo_pessoa" type="xsd:string" use="required" />
+        <xsd:attribute name="cpf_cnpj" type="xsd:long" use="required" />
+        <xsd:attribute name="nome" type="xsd:string" use="required" />
+        <xsd:attribute name="endereco" type="xsd:string" use="required" />
+        <xsd:attribute name="cep" type="xsd:int" use="required" />
+        <xsd:attribute name="cidade" type="xsd:string" use="required" />
+        <xsd:attribute name="uf" type="xsd:string" use="required" />
+        <xsd:attribute name="aceite" type="xsd:string" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="instrucoes">
+        <xsd:all>
+            <xsd:element name="juros" type="juros" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="multa" type="multa" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="desconto" type="desconto" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="abatimento" type="abatimento" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="protesto" type="protesto" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="baixa" type="baixa" minOccurs="0" maxOccurs="1" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="juros">
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="data" type="xsd:date" />
+        <xsd:attribute name="valor" type="xsd:decimal" />
+        <xsd:attribute name="taxa" type="xsd:decimal" />
+    </xsd:complexType>
+    <xsd:complexType name="multa">
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="data" type="xsd:date" />
+        <xsd:attribute name="valor" type="xsd:decimal" />
+        <xsd:attribute name="taxa" type="xsd:decimal" />
+    </xsd:complexType>
+    <xsd:complexType name="desconto">
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="data" type="xsd:date" />
+        <xsd:attribute name="valor" type="xsd:decimal" />
+        <xsd:attribute name="taxa" type="xsd:decimal" />
+    </xsd:complexType>
+    <xsd:complexType name="abatimento">
+        <xsd:attribute name="valor" type="xsd:decimal" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="protesto">
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="prazo" type="xsd:short" />
+    </xsd:complexType>
+    <xsd:complexType name="baixa">
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="prazo" type="xsd:short" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="pag_parcial">
+        <xsd:attribute name="autoriza" type="xsd:short" use="required" />
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="quantidade" type="xsd:short" />
+        <xsd:attribute name="tipo" type="xsd:short" />
+        <xsd:attribute name="valor_min" type="xsd:decimal" />
+        <xsd:attribute name="valor_max" type="xsd:decimal" />
+        <xsd:attribute name="percentual_min" type="xsd:decimal" />
+        <xsd:attribute name="percentual_max" type="xsd:decimal" />
+    </xsd:complexType>
+    <xsd:complexType name="mensagens">
+        <xsd:sequence>
+            <xsd:element name="mensagem" type="mensagem" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="mensagem">
+        <xsd:attribute name="linha" type="xsd:short" use="required" />
+        <xsd:attribute name="texto" type="xsd:string" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="rateio">
+        <xsd:sequence>
+            <xsd:element name="beneficiarios" type="rateio_beneficiarios" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="codigo" type="xsd:short" use="required" />
+        <xsd:attribute name="tipo_valor" type="xsd:short" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="rateio_beneficiarios">
+        <xsd:sequence>
+            <xsd:element name="beneficiario" type="rateio_beneficiario" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="rateio_beneficiario">
+        <xsd:attribute name="codigo" type="xsd:long" use="required" />
+        <xsd:attribute name="tipo_pessoa" type="xsd:string" />
+        <xsd:attribute name="cpf_cnpj" type="xsd:long" />
+        <xsd:attribute name="nome" type="xsd:string" />
+        <xsd:attribute name="nome_fantasia" type="xsd:string" />
+        <xsd:attribute name="valor" type="xsd:decimal" />
+        <xsd:attribute name="percentual" type="xsd:decimal" />
+        <xsd:attribute name="parcela" type="xsd:short" />
+    </xsd:complexType>
+    <xsd:complexType name="operacoes">
+        <xsd:attribute name="data_baixa" type="xsd:date" />
+        <xsd:attribute name="data_pagamento" type="xsd:date" />
+        <xsd:attribute name="data_credito" type="xsd:date" />
+        <xsd:attribute name="data_reembolso" type="xsd:date" />
+        <xsd:attribute name="valor_juros_recebido" type="xsd:decimal" />
+        <xsd:attribute name="valor_juros_pago" type="xsd:decimal" />
+        <xsd:attribute name="valor_multa_recebido" type="xsd:decimal" />
+        <xsd:attribute name="valor_desconto_utilizado" type="xsd:decimal" />
+        <xsd:attribute name="valor_abatimento_utilizado" type="xsd:decimal" />
+        <xsd:attribute name="valor_iof" type="xsd:decimal" />
+        <xsd:attribute name="custas_cartorio" type="xsd:decimal" />
+        <xsd:attribute name="ressarcimento_cartorio" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_registro" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_baixa_liquidacao" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_aponte_cartorio" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_interbancaria" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_manutencao_mensal" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_sustacao" type="xsd:decimal" />
+        <xsd:attribute name="tarifa_diversas" type="xsd:decimal" />
+        <xsd:attribute name="valor_pagamento" type="xsd:decimal" />
+        <xsd:attribute name="valor_reembolso" type="xsd:decimal" />
+        <xsd:attribute name="valor_cobrado" type="xsd:decimal" />
+        <xsd:attribute name="valor_creditado_debitado" type="xsd:decimal" />
+    </xsd:complexType>
+    <xsd:complexType name="ocorrencias">
+        <xsd:sequence>
+            <xsd:element name="ocorrencia" type="ocorrencia" minOccurs="1" maxOccurs="5" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ocorrencia">
+        <xsd:attribute name="codigo" type="xsd:int" use="required" />
+        <xsd:attribute name="mensagem" type="xsd:string" use="required" />
+        <xsd:attribute name="complemento" type="xsd:string" />
+    </xsd:complexType>
+</xsd:schema>

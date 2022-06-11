@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+        elementFormDefault="qualified"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="Bergs.Boc.Bocswsxn"
+        xmlns="Bergs.Boc.Bocswsxn">
+    <xsd:element name="dados">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="titulo" type="titulo" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="ocorrencias" type="ocorrencias" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="ambiente">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:pattern value="(P|T)"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="retorno" type="xsd:short" />
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="titulo">
+        <xsd:all>
+            <xsd:element name="beneficiario" type="beneficiario" minOccurs="0" maxOccurs="1" />
+        </xsd:all>
+        <xsd:attribute name="nosso_numero" type="xsd:long" />
+        <xsd:attribute name="codigo_barras" type="xsd:string" />
+        <xsd:attribute name="linha_digitavel" type="xsd:string" />
+        <xsd:attribute name="boleto" type="xsd:string" />
+    </xsd:complexType>
+    <xsd:complexType name="beneficiario">
+        <xsd:attribute name="codigo" type="xsd:long" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="ocorrencias">
+        <xsd:sequence>
+            <xsd:element name="ocorrencia" type="ocorrencia" minOccurs="1" maxOccurs="5" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ocorrencia">
+        <xsd:attribute name="codigo" type="xsd:int" use="required" />
+        <xsd:attribute name="mensagem" type="xsd:string" use="required" />
+        <xsd:attribute name="complemento" type="xsd:string" />
+    </xsd:complexType>
+</xsd:schema>

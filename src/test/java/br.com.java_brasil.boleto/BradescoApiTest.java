@@ -47,11 +47,11 @@ final class BradescoApiTest {
     @DisplayName("Testa Impressão Boleto")
     void testeImprimirBoleto() {
         // Model Null
-        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoleto(null));
+        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoletoBanco(null));
 
         // teste Sucesso (Não implementado)
         Throwable exception =
-                assertThrows(BoletoException.class, () -> boletoService.imprimirBoleto(new BoletoModel()));
+                assertThrows(BoletoException.class, () -> boletoService.imprimirBoletoBanco(new BoletoModel()));
         assertEquals("Não implementado!", exception.getMessage());
 
     }
@@ -104,6 +104,5 @@ final class BradescoApiTest {
 
         return boleto;
     }
-
 
 }

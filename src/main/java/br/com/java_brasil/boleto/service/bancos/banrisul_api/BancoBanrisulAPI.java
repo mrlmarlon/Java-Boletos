@@ -20,34 +20,32 @@ import java.awt.*;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Slf4j
 public class BancoBanrisulAPI extends BoletoController {
 
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
         try {
-            return imprimir(boletoModel);
+            return imprimir(boletoModel, false, false, null);
         } catch (Exception e) {
             throw new BoletoException(e.getMessage());
         }
     }
 
     @Override
-    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService) {
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService) {
         try {
-            imprimirDesktop(boletoModel, diretoImpressora, printService);
+            imprimir(boletoModel, true, diretoImpressora, printService);
         } catch (Exception e) {
             throw new BoletoException(e.getMessage());
         }
     }
 
     @Override
-    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
         try {
             ConfiguracaoBanrisulAPI configuracao = (ConfiguracaoBanrisulAPI) this.getConfiguracao();
             String xmlEnvio = montaBoletoXml(boletoModel, "EmitirBoleto");
@@ -116,50 +114,38 @@ public class BancoBanrisulAPI extends BoletoController {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
-    private byte[] imprimir(BoletoModel boletoModel) throws Exception {
+    private byte[] imprimir(BoletoModel boletoModel, boolean desktop, boolean diretoImpressora,
+                            PrintService printService) throws Exception {
         HashMap<String, Object> parametros = new HashMap<>();
         parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
         InputStream inputStream = this.getClass().getResourceAsStream("/logo/LogoBanrisul.jpg");
+        assert inputStream != null;
         Image image = new ImageIcon(IOUtils.toByteArray(inputStream)).getImage();
         parametros.put("LogoBanco", image);
 
         preparaValidaBoletoImpressao(boletoModel);
 
-        byte[] byteRelatorio = JasperUtil.geraRelatorio(Arrays.asList(boletoModel),
-                parametros,
-                "BoletoBanrisul",
-                this.getClass(),
-                new HashMap<>());
-
-        return byteRelatorio;
-    }
-
-    private void imprimirDesktop(BoletoModel boletoModel, boolean diretoImpressora,
-                                 PrintService printService) throws Exception {
-        try {
-            HashMap<String, Object> parametros = new HashMap<>();
-            parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
-
-            InputStream inputStream = this.getClass().getResourceAsStream("/logo/LogoBanrisul.jpg");
-            Image image = new ImageIcon(IOUtils.toByteArray(inputStream)).getImage();
-            parametros.put("LogoBanco", image);
-
-            preparaValidaBoletoImpressao(boletoModel);
-
-            JasperUtil.geraRelatorioDescktop(Arrays.asList(boletoModel), parametros, "BoletoBanrisul", this.getClass(),
+        if (desktop) {
+            JasperUtil.geraRelatorioDescktop(Collections.singletonList(boletoModel), parametros, "BoletoBanrisul", this.getClass(),
                     new HashMap<>(), diretoImpressora, printService);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BoletoException(e.getMessage());
+            return null;
+        } else {
+
+            return JasperUtil.geraRelatorio(Collections.singletonList(boletoModel),
+                    parametros,
+                    "BoletoBanrisul",
+                    this.getClass(),
+                    new HashMap<>());
         }
+
     }
 
     /**
      * Converte BoletoModel para o XML entrada da API
      *
      * @param boletoModel BoletoModel contendo os dados do boleto
-     * @param servico String com o serviço a ser executado
+     * @param servico     String com o serviço a ser executado
      * @return String XML
      */
     private String montaBoletoXml(BoletoModel boletoModel, String servico) throws Exception {
@@ -186,7 +172,7 @@ public class BancoBanrisulAPI extends BoletoController {
                 throw new Exception("Serviço não encontrado");
         }
 
-        String envelopeSoap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+        String xmlEnvio = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
                 "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
                 "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
@@ -197,7 +183,9 @@ public class BancoBanrisulAPI extends BoletoController {
                 "</soap:Body>" +
                 "</soap:Envelope>";
 
-        return envelopeSoap;
+        log.debug("Xml Envio: " + xmlEnvio);
+
+        return xmlEnvio;
     }
 
     private void preparaValidaBoletoImpressao(BoletoModel boletoModel) {
@@ -215,7 +203,7 @@ public class BancoBanrisulAPI extends BoletoController {
                         boletoModel.getBeneficiario().getEndereco().getComplemento()
         );
 
-        if(StringUtils.isBlank(boletoModel.getCodigoBarras())){
+        if (StringUtils.isBlank(boletoModel.getCodigoBarras())) {
             StringBuilder codigoBarras = new StringBuilder();
             codigoBarras.append("0419");
             codigoBarras.append("X"); //Substituir pelo DAC
@@ -226,7 +214,7 @@ public class BancoBanrisulAPI extends BoletoController {
             campoLivre.append("21");
             campoLivre.append(StringUtils.leftPad(boletoModel.getBeneficiario().getAgencia(), 4, "0"));
             campoLivre.append(StringUtils.leftPad(boletoModel.getBeneficiario().getConta(), 7, "0"));
-            campoLivre.append(StringUtils.leftPad(boletoModel.getBeneficiario().getNossoNumero(),8,"0"));
+            campoLivre.append(StringUtils.leftPad(boletoModel.getBeneficiario().getNossoNumero(), 8, "0"));
             campoLivre.append("40");
 
             Integer digito10 = BanrisulUtil.modulo10Banrisul(campoLivre.toString());
@@ -235,34 +223,34 @@ public class BancoBanrisulAPI extends BoletoController {
             String dac = BanrisulUtil.modulo11Dac(codigoBarras.toString().replace("X", ""));
 
             boletoModel.setCodigoBarras(codigoBarras.toString().replace("X", dac));
-            if(StringUtils.isBlank(boletoModel.getLinhaDigitavel())){
+            if (StringUtils.isBlank(boletoModel.getLinhaDigitavel())) {
                 boletoModel.setLinhaDigitavel(codigoBarras.toString().replace("X", dac));
             }
         }
 
-        if(StringUtils.isBlank(boletoModel.getLinhaDigitavel())){
+        if (StringUtils.isBlank(boletoModel.getLinhaDigitavel())) {
             StringBuilder linhaParte1 = new StringBuilder();
-            linhaParte1.append(boletoModel.getLinhaDigitavel().substring(0, 4));
-            linhaParte1.append(boletoModel.getLinhaDigitavel().substring(19, 21));
-            linhaParte1.append(boletoModel.getLinhaDigitavel().substring(21, 24));
+            linhaParte1.append(boletoModel.getLinhaDigitavel(), 0, 4);
+            linhaParte1.append(boletoModel.getLinhaDigitavel(), 19, 21);
+            linhaParte1.append(boletoModel.getLinhaDigitavel(), 21, 24);
             linhaParte1.append(BanrisulUtil.modulo10Banrisul(linhaParte1.toString()));
 
             StringBuilder linhaParte2 = new StringBuilder();
-            linhaParte2.append(boletoModel.getLinhaDigitavel().substring(24, 25));
-            linhaParte2.append(boletoModel.getLinhaDigitavel().substring(25, 32));
-            linhaParte2.append(boletoModel.getLinhaDigitavel().substring(32, 34));
+            linhaParte2.append(boletoModel.getLinhaDigitavel().charAt(24));
+            linhaParte2.append(boletoModel.getLinhaDigitavel(), 25, 32);
+            linhaParte2.append(boletoModel.getLinhaDigitavel(), 32, 34);
             linhaParte2.append(BanrisulUtil.modulo10Banrisul(linhaParte2.toString()));
 
             StringBuilder linhaParte3 = new StringBuilder();
-            linhaParte3.append(boletoModel.getLinhaDigitavel().substring(34, 40));
+            linhaParte3.append(boletoModel.getLinhaDigitavel(), 34, 40);
             linhaParte3.append("40");
-            linhaParte3.append(boletoModel.getLinhaDigitavel().substring(42, 44));
+            linhaParte3.append(boletoModel.getLinhaDigitavel(), 42, 44);
             linhaParte3.append(BanrisulUtil.modulo10Banrisul(linhaParte3.toString()));
 
             StringBuilder linhaParte4 = new StringBuilder();
-            linhaParte4.append(boletoModel.getLinhaDigitavel().substring(4, 5));
-            linhaParte4.append(boletoModel.getLinhaDigitavel().substring(5, 9));
-            linhaParte4.append(boletoModel.getLinhaDigitavel().substring(9, 19));
+            linhaParte4.append(boletoModel.getLinhaDigitavel().charAt(4));
+            linhaParte4.append(boletoModel.getLinhaDigitavel(), 5, 9);
+            linhaParte4.append(boletoModel.getLinhaDigitavel(), 9, 19);
 
             StringBuilder linhaDigitavel = new StringBuilder();
             linhaDigitavel.append(linhaParte1.substring(0, 5));
@@ -314,14 +302,39 @@ public class BancoBanrisulAPI extends BoletoController {
 
     private void validaDadosImpressao(BoletoModel boleto) {
         ValidaUtils.validaBoletoModel(boleto,
-                Arrays.asList("locaisDePagamento", "dataVencimento", "beneficiario.nomeBeneficiario",
-                        "beneficiario.documento", "beneficiario.agencia", "beneficiario.digitoConta",
-                        "beneficiario.conta", "beneficiario.endereco", "beneficiario.endereco.logradouro",
-                        "beneficiario.endereco.numero", "beneficiario.endereco.bairro", "beneficiario.endereco.cidade",
-                        "beneficiario.endereco.uf", "beneficiario.endereco.cep","dataEmissao", "numeroDocumento", "especieDocumento", "aceite",
-                        "beneficiario.nossoNumero", "beneficiario.digitoNossoNumero", "especieMoeda", "valorBoleto",
-                        "pagador.nome", "pagador.documento", "pagador.endereco.logradouro", "pagador.endereco.cep",
-                        "linhaDigitavel", "codigoBarras", "pagador.endereco.numero", "pagador.endereco.bairro",
-                        "pagador.endereco.cidade", "pagador.endereco.uf"));
+                Arrays.asList("locaisDePagamento",
+                        "dataVencimento",
+                        "dataEmissao",
+                        "numeroDocumento",
+                        "especieDocumento",
+                        "aceite",
+                        "especieMoeda",
+                        "valorBoleto",
+                        "linhaDigitavel",
+                        "codigoBarras",
+                        "beneficiario",
+                        "beneficiario.nomeBeneficiario",
+                        "beneficiario.documento",
+                        "beneficiario.agencia",
+                        "beneficiario.digitoConta",
+                        "beneficiario.conta",
+                        "beneficiario.endereco",
+                        "beneficiario.endereco.logradouro",
+                        "beneficiario.endereco.numero",
+                        "beneficiario.endereco.bairro",
+                        "beneficiario.endereco.cidade",
+                        "beneficiario.endereco.uf",
+                        "beneficiario.endereco.cep",
+                        "beneficiario.nossoNumero",
+                        "beneficiario.digitoNossoNumero",
+                        "pagador",
+                        "pagador.nome",
+                        "pagador.documento",
+                        "pagador.endereco.logradouro",
+                        "pagador.endereco.cep",
+                        "pagador.endereco.numero",
+                        "pagador.endereco.bairro",
+                        "pagador.endereco.cidade",
+                        "pagador.endereco.uf"));
     }
 }

@@ -1,4 +1,4 @@
-package br.com.java_brasil.boleto.service.bancos.exemplo;
+package br.com.java_brasil.boleto.service.bancos.exemplo_api;
 
 import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoController;
@@ -15,7 +15,7 @@ import java.util.List;
 public class BancoExemplo extends BoletoController {
 
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
     }
 
@@ -50,13 +50,12 @@ public class BancoExemplo extends BoletoController {
     }
 
     @Override
-    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
-                                      PrintService printService) {
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService) {
         throw new BoletoException("Não implementado!");
     }
 
     @Override
-    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
     }
 }

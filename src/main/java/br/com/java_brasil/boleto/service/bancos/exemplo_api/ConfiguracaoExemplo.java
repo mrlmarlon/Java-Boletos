@@ -1,4 +1,4 @@
-package br.com.java_brasil.boleto.service.bancos.exemplo;
+package br.com.java_brasil.boleto.service.bancos.exemplo_api;
 
 import br.com.java_brasil.boleto.model.Configuracao;
 import lombok.Getter;

@@ -40,13 +40,6 @@ final class SicoobCnab240Test {
     }
 
     @Test
-    @DisplayName("Testa Impressão Boleto")
-    void testeImprimirBoleto() {
-        // Model Null
-        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoleto(null));
-    }
-
-    @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
         final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);

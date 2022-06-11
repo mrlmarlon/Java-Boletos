@@ -45,8 +45,6 @@ public class BoletoModel implements Serializable {
     protected BigDecimal valorPercentualDescontos2 = BigDecimal.ZERO;
     protected LocalDate dataLimiteParaDesconto3;
     protected BigDecimal valorPercentualDescontos3 = BigDecimal.ZERO;
-    protected BigDecimal valorDeducoes = BigDecimal.ZERO;
-    protected BigDecimal valorAcrescimos = BigDecimal.ZERO;
     protected boolean protesto;
     protected int diasProtesto;
     protected boolean negativacaoAutomatica;
@@ -54,9 +52,7 @@ public class BoletoModel implements Serializable {
     protected int diasParaBaixaDevolver;
     protected String especieMoeda;
     protected int codigoEspecieMoeda;
-
     protected Integer parcela;
-    protected String especieDocumento;
     protected String numeroBoleto;
     protected Pagador pagador;
     protected Pagador beneficiarioFinal; //Avalista
@@ -65,7 +61,6 @@ public class BoletoModel implements Serializable {
     protected List<InformacaoModel> descricoes = Collections.emptyList();
     protected List<InformacaoModel> locaisDePagamento = Collections.emptyList();
     protected String codigoBarras;
-    protected String linhaDigitavel;
     protected String linhaDigitavel;
     protected boolean autorizaPagamentoParcial;
     protected int codigoPagamentoParcial;

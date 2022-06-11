@@ -1,45 +1,5 @@
 package br.com.java_brasil.boleto.service.bancos.bradesco_api;
 
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static org.apache.http.HttpHeaders.USER_AGENT;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import javax.print.PrintService;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
@@ -49,6 +9,8 @@ import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradesc
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoModelConverter;
 import br.com.java_brasil.boleto.util.BoletoUtil;
 import br.com.java_brasil.boleto.util.RestUtil;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
@@ -63,6 +25,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
+import javax.print.PrintService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -85,19 +48,19 @@ import static org.apache.http.HttpHeaders.*;
 public class BancoBradescoAPI extends BoletoController {
 
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
         //TODO Implementar Impressão
     }
 
     @Override
-    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
-                                      PrintService printService) {
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                            PrintService printService) {
         throw new BoletoException("Não implementado!");
     }
 
     @Override
-    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
@@ -258,62 +221,5 @@ public class BancoBradescoAPI extends BoletoController {
     public List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
-
-
-    /**
-     * Converte BoletoModel para o padrão de entrada da API
-     *
-     * @param boletoModel
-     * @return
-     */
-    private BoletoBradescoAPIRequest montaBoletoRequest(BoletoModel boletoModel) {
-        BoletoBradescoAPIRequest boletoRequest = new BoletoBradescoAPIRequest();
-        boletoRequest.setAgenciaDestino(Integer.valueOf(boletoModel.getBeneficiario().getAgencia()));
-        boletoRequest.setNuCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(0, 8)));
-        boletoRequest.setFilialCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(8, 12)));
-        boletoRequest.setCtrlCPFCNPJ(Integer.valueOf(boletoModel.getBeneficiario().getDocumento().substring(boletoModel.getBeneficiario().getDocumento().length() - 2)));
-        boletoRequest.setIdProduto(Integer.valueOf(boletoModel.getBeneficiario().getCarteira()));
-        boletoRequest.setNuNegociacao(
-                Long.valueOf(StringUtils.leftPad(boletoModel.getBeneficiario().getAgencia(), 4, '0') +
-                        "0000000" +
-                        StringUtils.leftPad(boletoModel.getBeneficiario().getConta(), 7, '0')));
-        boletoRequest.setNuCliente(boletoModel.getPagador().getCodigo());
-        boletoRequest.setDtEmissaoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(LocalDate.now()));
-        boletoRequest.setDtVencimentoTitulo(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        boletoRequest.setVlNominalTitulo(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorBoleto(), 2)));
-        boletoRequest.setControleParticipante(boletoModel.getPagador().getCodigo());
-
-        if (boletoModel.getDiasJuros() != 0) {
-            boletoRequest.setPercentualJuros(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getValorPercentualJuros())));
-            boletoRequest.setQtdeDiasJuros(boletoModel.getDiasJuros());
-        }
-
-        if (boletoModel.getDiasMulta() != 0) {
-            boletoRequest.setPercentualMulta(Long.valueOf(BoletoUtil.bigDecimalSemCasas(boletoModel.getValorPercentualMulta())));
-            boletoRequest.setQtdeDiasMulta(Integer.valueOf(String.valueOf(boletoModel.getDiasMulta())));
-        }
-
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorPercentualDescontos())) {
-            boletoRequest.setVlDesconto1(Long.valueOf(BoletoUtil.valorSemPontos(boletoModel.getValorPercentualDescontos(), 2)));
-            boletoRequest.setDataLimiteDesconto1(BoletoUtil.getDataFormatoDDMMYYYY(boletoModel.getDataVencimento()));
-        }
-
-        boletoRequest.setNomePagador(BoletoUtil.limitarTamanhoString(boletoModel.getPagador().getNome(), 70));
-        boletoRequest.setLogradouroPagador(boletoModel.getPagador().getEndereco().getLogradouro());
-        boletoRequest.setNuLogradouroPagador(boletoModel.getPagador().getEndereco().getNumero());
-        boletoRequest.setComplementoLogradouroPagador(BoletoUtil.limitarTamanhoString(
-                Optional.ofNullable(boletoModel.getPagador().getEndereco().getComplemento()).orElse(""), 15));
-        boletoRequest.setCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(0, 5)));
-        boletoRequest.setComplementoCepPagador(Integer.valueOf(BoletoUtil.manterApenasNumeros(boletoModel.getPagador().getEndereco().getCep()).substring(5)));
-        boletoRequest.setBairroPagador(boletoModel.getPagador().getEndereco().getBairro());
-        boletoRequest.setMunicipioPagador(boletoModel.getPagador().getEndereco().getCidade());
-        boletoRequest.setUfPagador(boletoModel.getPagador().getEndereco().getUf());
-        boletoRequest.setCdIndCpfcnpjPagador(boletoModel.getPagador().isClienteCpf() ? 1 : 2);
-        boletoRequest.setNuCpfcnpjPagador(Long.valueOf(StringUtils.leftPad(boletoModel.getPagador().getDocumento(), 14, '0')));
-        boletoRequest.setEndEletronicoPagador(Optional.ofNullable(boletoModel.getPagador().getEmail()).orElse(""));
-
-        return boletoRequest;
-    }
-
 
 }

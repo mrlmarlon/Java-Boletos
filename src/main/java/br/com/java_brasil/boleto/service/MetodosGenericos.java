@@ -9,11 +9,12 @@ import java.util.List;
 
 public interface MetodosGenericos {
 
-    byte[] imprimirBoleto(@NonNull BoletoModel boletoModel);
+    byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel);
 
-    void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService);
+    void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService);
 
-    byte[] emitirBoleto(@NonNull BoletoModel boletoModel);
+    byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel);
+
     BoletoModel enviarBoleto(@NonNull BoletoModel boletoModel);
 
     BoletoModel alterarBoleto(@NonNull BoletoModel boletoModel);
@@ -21,7 +22,9 @@ public interface MetodosGenericos {
     BoletoModel consultarBoleto(@NonNull BoletoModel boletoModel);
 
     BoletoModel baixarBoleto(@NonNull BoletoModel boletoModel);
+
     String gerarArquivoRemessa(@NonNull List<RemessaRetornoModel> remessaRetornoModel);
 
     List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo);
+
 }

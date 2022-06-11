@@ -18,19 +18,19 @@ public class BoletoService implements MetodosGenericos {
     }
 
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
-        return this.controller.imprimirBoleto(boletoModel);
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
+        return this.controller.imprimirBoletoJasper(boletoModel);
     }
 
     @Override
-    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
-                                      PrintService printService) {
-        this.controller.imprimirBoletoDesktop(boletoModel, diretoImpressora, printService);
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                            PrintService printService) {
+        this.controller.imprimirBoletoJasperDesktop(boletoModel, diretoImpressora, printService);
     }
 
     @Override
-    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
-        return this.controller.emitirBoleto(boletoModel);
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
+        return this.controller.imprimirBoletoJasper(boletoModel);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BoletoService implements MetodosGenericos {
         return this.controller.baixarBoleto(boletoModel);
     }
 
-    public Configuracao getConfiguracao(){
+    public Configuracao getConfiguracao() {
         return this.controller.getConfiguracao();
     }
 

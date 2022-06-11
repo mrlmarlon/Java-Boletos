@@ -4,7 +4,7 @@ import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoBanco;
 import br.com.java_brasil.boleto.model.BoletoModel;
 import br.com.java_brasil.boleto.service.BoletoService;
-import br.com.java_brasil.boleto.service.bancos.exemplo.ConfiguracaoExemplo;
+import br.com.java_brasil.boleto.service.bancos.exemplo_api.ConfiguracaoExemplo;
 import br.com.java_brasil.boleto.util.ValidaUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,11 +39,11 @@ final class ExemploTest {
     @DisplayName("Testa Impressão Boleto")
     void testeImprimirBoleto() {
         // Model Null
-        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoleto(null));
+        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoletoBanco(null));
 
         // teste Sucesso (Não implementado)
         Throwable exception =
-                assertThrows(BoletoException.class, () -> boletoService.imprimirBoleto(new BoletoModel()));
+                assertThrows(BoletoException.class, () -> boletoService.imprimirBoletoBanco(new BoletoModel()));
         assertEquals("Não implementado!", exception.getMessage());
 
     }

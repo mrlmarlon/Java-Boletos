@@ -40,13 +40,6 @@ final class SicrediCnab400Test {
     }
 
     @Test
-    @DisplayName("Testa Impressão Boleto")
-    void testeImprimirBoleto() {
-        // Model Null
-        assertThrows(NullPointerException.class, () -> boletoService.imprimirBoleto(null));
-    }
-
-    @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
         final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -96,7 +89,7 @@ final class SicrediCnab400Test {
         Integer digitoGerado = SicrediUtil.gerarDigitoNossoNumero(
                 "2",
                 "08875",
-                LocalDate.of(2022, 6,1),
+                LocalDate.of(2022, 6, 1),
                 "0663",
                 "59770",
                 "7");
@@ -172,6 +165,5 @@ final class SicrediCnab400Test {
 
         return boleto;
     }
-
 
 }

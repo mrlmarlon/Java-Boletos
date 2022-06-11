@@ -112,9 +112,8 @@ public class BanrisulUtil {
      * @return String cotendo o xml do retorno
      */
     public static String comunicacaoHttpsURLConnection(String envelopeSoap, ConfiguracaoBanrisulAPI configuracao) throws IOException {
-        System.setProperty("javax.net.ssl.keyStore", configuracao.getCaminhoCertificado()); //"D:/Temp/dacar.jks"
-        System.setProperty("javax.net.ssl.keyStorePassword", configuracao.getSenhaCertificado()); //"12345678"
-        //String address = "https://ww20.banrisul.com.br/boc/link/Bocswsxn_CobrancaOnlineWS.asmx";
+        System.setProperty("javax.net.ssl.keyStore", configuracao.getCaminhoCertificado());
+        System.setProperty("javax.net.ssl.keyStorePassword", configuracao.getSenhaCertificado());
         URL url = new URL(configuracao.getURLBase());
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestMethod("POST");

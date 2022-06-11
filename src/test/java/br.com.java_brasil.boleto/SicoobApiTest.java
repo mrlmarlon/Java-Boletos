@@ -69,7 +69,7 @@ final class SicoobApiTest {
         BoletoModel boletoModel = new BoletoModel();
         boletoModel.setCodigoBarras("12345678901234567890123456789012345678901234");
         boletoModel.setLinhaDigitavel("12345678901234567890123456789012345678901234567");
-        BoletoModel boletoModelRetorno = boletoService.consultaBoleto(boletoModel);
+        BoletoModel boletoModelRetorno = boletoService.consultarBoleto(boletoModel);
 
         System.out.println(boletoModelRetorno.getSituacao());
     }

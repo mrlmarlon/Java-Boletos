@@ -25,16 +25,16 @@ import java.util.*;
 
 public class BancoSicoobCnab240 extends BoletoController {
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
         try {
             return imprimir(boletoModel);
         } catch (Exception e) {
-            throw new BoletoException(e.getMessage());
+            throw new BoletoException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void imprimirBoletoDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService) {
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora, PrintService printService) {
         try {
             imprimirDesktop(boletoModel, diretoImpressora, printService);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class BancoSicoobCnab240 extends BoletoController {
     }
 
     @Override
-    public byte[] emitirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
@@ -77,7 +77,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         return importarArquivo(arquivo);
     }
 
-    public String gerarArquivo(List<RemessaRetornoModel> list)  {
+    public String gerarArquivo(List<RemessaRetornoModel> list) {
         list.forEach(boleto -> ValidaUtils.validaBoletoModel(boleto.getBoleto(),
                 this.getConfiguracao().camposObrigatoriosBoleto()));
 
@@ -106,7 +106,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append("1"); //Código Remessa / Retorno: "1"
         linhaArquivo.append(BoletoUtil.getDataFormato(LocalDate.now(), "ddMMyyyy")); //Data de Geração do Arquivo
         linhaArquivo.append(BoletoUtil.getHoraFormato(LocalTime.now(), "HHmmss")); //Hora de Geração do Arquivo
-        linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(),6,"0")); //Número sequencial do Arquivo
+        linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(), 6, "0")); //Número sequencial do Arquivo
         linhaArquivo.append("081");//Nº da Versão do Layout do Arquivo
         linhaArquivo.append("00000"); //Densidade de Gravação do Arquivo "00000"
         linhaArquivo.append(StringUtils.repeat(" ", 20));//Para uso resevado do Banco: Preencher com espaços em branco
@@ -136,7 +136,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getNomeBeneficiario(), 30, " "));//Nome da Empresa
         linhaArquivo.append(StringUtils.repeat(" ", 40));
         linhaArquivo.append(StringUtils.repeat(" ", 40));
-        linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(),8,"0"));
+        linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(), 8, "0"));
         linhaArquivo.append(BoletoUtil.getDataFormato(LocalDate.now(), "ddMMyyyy"));
         linhaArquivo.append(StringUtils.repeat(" ", 8));
         linhaArquivo.append(StringUtils.repeat(" ", 33));
@@ -144,7 +144,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append((char) 10);
 
         //DETALHE COM REGISTRO (Tipo 1)
-        for(RemessaRetornoModel boleto : list) {
+        for (RemessaRetornoModel boleto : list) {
             contador++;
             contadorLinhas++;
             //REGISTRO P
@@ -182,23 +182,23 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(boleto.getBoleto().isAceite() ? "A" : "N"); //Aceite
             linhaArquivo.append(BoletoUtil.getDataFormato(boleto.getBoleto().getDataEmissao(), "ddMMyyyy"));//Data Emissão
 
-            if(!boleto.getBoleto().getTipoJuros().equals(TipoJurosEnum.ISENTO)
-                    && BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualJuros())){
+            if (!boleto.getBoleto().getTipoJuros().equals(TipoJurosEnum.ISENTO)
+                    && BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualJuros())) {
                 linhaArquivo.append(boleto.getBoleto().getTipoJuros().equals(TipoJurosEnum.VALOR_DIA) ? "1" : "2");
-                if(boleto.getBoleto().getDiasJuros() > 0){
+                if (boleto.getBoleto().getDiasJuros() > 0) {
                     LocalDate dataParaInicioJuros = BoletoUtil.adicionarDiasData(boleto.getBoleto().getDataVencimento(), boleto.getBoleto().getDiasJuros());
                     linhaArquivo.append(BoletoUtil.getDataFormato(dataParaInicioJuros, "ddMMyyyy"));
                 } else {
                     linhaArquivo.append(BoletoUtil.getDataFormato(boleto.getBoleto().getDataVencimento(), "ddMMyyyy"));
                 }
-                linhaArquivo.append(BoletoUtil.formatarValorSemPonto(boleto.getBoleto().getValorPercentualJuros(),2,15)); //Valor/% de juros por dia de atraso com 13 posições - Preencher com valor (alinhados à direita com zeros à esquerda) ou preencher com zeros.
+                linhaArquivo.append(BoletoUtil.formatarValorSemPonto(boleto.getBoleto().getValorPercentualJuros(), 2, 15)); //Valor/% de juros por dia de atraso com 13 posições - Preencher com valor (alinhados à direita com zeros à esquerda) ou preencher com zeros.
             } else {
                 linhaArquivo.append("0");
                 linhaArquivo.append(StringUtils.repeat("0", 8));
                 linhaArquivo.append(StringUtils.repeat("0", 15));
             }
 
-            if(BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos())){
+            if (BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos())) {
                 linhaArquivo.append(boleto.getBoleto().getTipoDesconto().equals(TipoDescontoEnum.VALOR_FIXO) ? "1" : "2");//Desconto
             } else {
                 linhaArquivo.append("0");//Desconto
@@ -231,7 +231,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(" ");
             linhaArquivo.append(StringUtils.leftPad(boleto.getInstrucao(), 2, "0"));// Código de Movimento Remessa
             linhaArquivo.append(boleto.getBoleto().getPagador().isClienteCpf() ? "1" : "2");//Tipo de inscrição pagador
-            linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getDocumento(),15, ""));
+            linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getDocumento(), 15, ""));
 
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getNome(), 40, " ")); //Nome
 
@@ -243,10 +243,10 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(StringUtils.rightPad(enderecoCompleto, 40, " "));
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getBairro(), 15, " "));
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCep(), 8, " "));
-            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCidade(),15, " "));
+            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCidade(), 15, " "));
             linhaArquivo.append(boleto.getBoleto().getPagador().getEndereco().getUf());
 
-            if(boleto.getBoleto().getBeneficiarioFinal() != null) {
+            if (boleto.getBoleto().getBeneficiarioFinal() != null) {
                 linhaArquivo.append(boleto.getBoleto().getBeneficiarioFinal().isClienteCpf() ? "1" : "2");//Sac. / Aval.
                 linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getBeneficiarioFinal().getDocumento(), 15, "0"));//CNPJ/CPF Avalista
                 linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getBeneficiarioFinal().getNome(), 40, " "));//Nome do Sacador/Avalista
@@ -273,7 +273,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(StringUtils.repeat(" ", 1));
             linhaArquivo.append(StringUtils.leftPad(boleto.getInstrucao(), 2, "0")); // Código de Movimento Remessa
 
-            if(BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos2())){
+            if (BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos2())) {
                 linhaArquivo.append(boleto.getBoleto().getTipoDesconto().equals(TipoDescontoEnum.VALOR_FIXO) ? "1" : "2");//Desconto
             } else {
                 linhaArquivo.append("0");//Desconto
@@ -281,7 +281,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(boleto.getBoleto().getDataLimiteParaDesconto2() == null ? "00000000" : BoletoUtil.getDataFormato(boleto.getBoleto().getDataLimiteParaDesconto2(), "ddMMyyyy"));//Data Desconto
             linhaArquivo.append(BoletoUtil.formatarValorSemPonto(boleto.getBoleto().getValorPercentualDescontos2(), 2, 15));//Valor Desconto
 
-            if(BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos3())){
+            if (BoletoUtil.isNotNullEMaiorQZero(boleto.getBoleto().getValorPercentualDescontos3())) {
                 linhaArquivo.append(boleto.getBoleto().getTipoDesconto().equals(TipoDescontoEnum.VALOR_FIXO) ? "1" : "2");//Desconto
             } else {
                 linhaArquivo.append("0");//Desconto
@@ -295,7 +295,7 @@ public class BancoSicoobCnab240 extends BoletoController {
                 linhaArquivo.append("0");
             }
 
-            if(boleto.getBoleto().getDiasMulta() > 0){
+            if (boleto.getBoleto().getDiasMulta() > 0) {
                 LocalDate dataParaInicioMulta = BoletoUtil.adicionarDiasData(boleto.getBoleto().getDataVencimento(), boleto.getBoleto().getDiasMulta());
                 linhaArquivo.append(BoletoUtil.getDataFormato(dataParaInicioMulta, "ddMMyyyy"));
             } else {
@@ -364,7 +364,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append("9");
         linhaArquivo.append(StringUtils.repeat(" ", 9));
         linhaArquivo.append("000001");
-        linhaArquivo.append(StringUtils.leftPad(contadorLinhas.toString(), 6,  "0"));
+        linhaArquivo.append(StringUtils.leftPad(contadorLinhas.toString(), 6, "0"));
         linhaArquivo.append("000000");
         linhaArquivo.append(StringUtils.repeat(" ", 205));
         linhaArquivo.append((char) 13);
@@ -384,35 +384,35 @@ public class BancoSicoobCnab240 extends BoletoController {
         return sbRemessa.toString();
     }
 
-    private List<RemessaRetornoModel> importarArquivo(String arquivo){
+    private List<RemessaRetornoModel> importarArquivo(String arquivo) {
         List<RemessaRetornoModel> list = new ArrayList<>();
         try (Scanner scanner = new Scanner(arquivo)) {
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
                 if (linha.length() > 1) {
                     String numeroRetorno = null;
-                    if(linha.substring(7, 8).equals("0")) { //Header
-                        if(!linha.substring(142, 143).equals("2")) { //2 = RETORNO
+                    if (linha.charAt(7) == '0') { //Header
+                        if (linha.charAt(142) != '2') { //2 = RETORNO
                             throw new BoletoException("Formato do aquivo inválido.");
                         }
-                        if(!linha.substring(0, 3).equals("756")) { //Número do Sicoob
+                        if (!linha.substring(0, 3).equals("756")) { //Número do Sicoob
                             throw new BoletoException("Número do Banco inválido.");
                         }
                         numeroRetorno = linha.substring(157, 163);
                     }
-                    if(linha.substring(7, 8).equals("3")) { //Detalhe
+                    if (linha.charAt(7) == '3') { //Detalhe
                         String tipoRegistro = linha.substring(13, 14);
-                        if(tipoRegistro.equals("T")){ //REGISTRO DETALHE SEGMENTO T
+                        if (tipoRegistro.equals("T")) { //REGISTRO DETALHE SEGMENTO T
                             RemessaRetornoModel remessaRetornoModel = new RemessaRetornoModel();
                             remessaRetornoModel.setBoleto(new BoletoModel());
                             remessaRetornoModel.getBoleto().setPagador(new Pagador());
                             remessaRetornoModel.getBoleto().setBeneficiario(new Beneficiario());
 
                             remessaRetornoModel.getBoleto().setCodRetorno(numeroRetorno);
-                            remessaRetornoModel.getBoleto().getPagador().setDocumento(linha.substring(133,148));
-                            remessaRetornoModel.getBoleto().getPagador().setNome(linha.substring(148,188));
-                            remessaRetornoModel.getBoleto().getBeneficiario().setNossoNumero(linha.substring(37,46));
-                            remessaRetornoModel.getBoleto().getBeneficiario().setDigitoNossoNumero(linha.substring(46,47));
+                            remessaRetornoModel.getBoleto().getPagador().setDocumento(linha.substring(133, 148));
+                            remessaRetornoModel.getBoleto().getPagador().setNome(linha.substring(148, 188));
+                            remessaRetornoModel.getBoleto().getBeneficiario().setNossoNumero(linha.substring(37, 46));
+                            remessaRetornoModel.getBoleto().getBeneficiario().setDigitoNossoNumero(linha.substring(46, 47));
                             remessaRetornoModel.setOcorrencia(linha.substring(15, 17));
                             remessaRetornoModel.getBoleto().setNumeroDocumento(linha.substring(58, 73));
                             remessaRetornoModel.getBoleto().setDataVencimento(BoletoUtil.formataStringPadraoDDMMYYYYParaLocalDate(linha.substring(73, 81)));//Formato: DDMMAAAA
@@ -420,13 +420,12 @@ public class BancoSicoobCnab240 extends BoletoController {
                             remessaRetornoModel.setDespesaCobranca(BoletoUtil.stringSemPontoParaBigDecimal(linha.substring(198, 213)));
                             remessaRetornoModel.setMotivoOcorrencia(linha.substring(213, 223));
                             list.add(remessaRetornoModel);
-                        } else if(tipoRegistro.equals("U")){ //REGISTRO DETALHE SEGMENTO U
+                        } else if (tipoRegistro.equals("U")) { //REGISTRO DETALHE SEGMENTO U
                             //é referente ao registro anterior lançado na list (Ultimo registro)
                             list.get(list.size() - 1).setAbatimentoConcedido(BoletoUtil.stringSemPontoParaBigDecimal(linha.substring(47, 62)));
                             String previsaoConta = linha.substring(145, 153);
-                            if (previsaoConta != null
-                                && !previsaoConta.replaceAll("\\D", "").equals("00000000")) {
-                                    list.get(list.size() - 1).setDataPrevisaoLancamento(BoletoUtil.formataStringPadraoDDMMYYYYParaLocalDate(previsaoConta));
+                            if (!previsaoConta.replaceAll("\\D", "").equals("00000000")) {
+                                list.get(list.size() - 1).setDataPrevisaoLancamento(BoletoUtil.formataStringPadraoDDMMYYYYParaLocalDate(previsaoConta));
                             }
 
                             list.get(list.size() - 1).setDataOcorrencia(BoletoUtil.formataStringPadraoDDMMYYYYParaLocalDate(linha.substring(137, 145)));//Formato: DDMMAAAA
@@ -443,7 +442,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         return list;
     }
 
-    private byte[] imprimir(BoletoModel boletoModel) throws Exception  {
+    private byte[] imprimir(BoletoModel boletoModel) throws Exception {
         HashMap<String, Object> parametros = new HashMap<>();
         parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
@@ -453,17 +452,15 @@ public class BancoSicoobCnab240 extends BoletoController {
 
         preparaValidaBoletoImpressao(boletoModel);
 
-        byte[] byteRelatorio = JasperUtil.geraRelatorio(Arrays.asList(boletoModel),
+        return JasperUtil.geraRelatorio(Arrays.asList(boletoModel),
                 parametros,
                 "BoletoSicoob",
                 this.getClass(),
                 new HashMap<>());
-
-        return byteRelatorio;
     }
 
     private void imprimirDesktop(BoletoModel boletoModel, boolean diretoImpressora,
-                                 PrintService printService) throws Exception  {
+                                 PrintService printService) throws Exception {
         try {
             HashMap<String, Object> parametros = new HashMap<>();
             parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
@@ -474,7 +471,7 @@ public class BancoSicoobCnab240 extends BoletoController {
 
             preparaValidaBoletoImpressao(boletoModel);
 
-            JasperUtil.geraRelatorioDescktop(Arrays.asList(boletoModel), parametros, "BoletoSicoob", this.getClass(),
+            JasperUtil.geraRelatorioDescktop(Collections.singletonList(boletoModel), parametros, "BoletoSicoob", this.getClass(),
                     new HashMap<>(), diretoImpressora, printService);
         } catch (Exception e) {
             e.printStackTrace();
@@ -485,7 +482,7 @@ public class BancoSicoobCnab240 extends BoletoController {
     private void preparaValidaBoletoImpressao(BoletoModel boletoModel) {
         boletoModel.getBeneficiario().setDocumento(BoletoUtil.formatarCnpjCpf(boletoModel.getBeneficiario().getDocumento()));
         boletoModel.getPagador().setDocumento(BoletoUtil.formatarCnpjCpf(boletoModel.getPagador().getDocumento()));
-        if(boletoModel.getBeneficiarioFinal() != null) {
+        if (boletoModel.getBeneficiarioFinal() != null) {
             boletoModel.getBeneficiarioFinal().setDocumento(BoletoUtil.formatarCnpjCpf(boletoModel.getBeneficiarioFinal().getDocumento()));
         }
 
@@ -516,7 +513,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         StringBuilder linhaParte2 = new StringBuilder();
         linhaParte2.append("01");
         linhaParte2.append(boletoModel.getBeneficiario().getNumeroConvenio());
-        linhaParte2.append(boletoModel.getBeneficiario().getNossoNumero().substring(2,3));
+        linhaParte2.append(boletoModel.getBeneficiario().getNossoNumero().substring(2, 3));
         linhaParte2.append(SicoobUtil.modulo10(linhaParte2.toString()));
 
         StringBuilder linhaParte3 = new StringBuilder();
@@ -583,12 +580,30 @@ public class BancoSicoobCnab240 extends BoletoController {
 
     private void validaDadosImpressao(BoletoModel boleto) {
         ValidaUtils.validaBoletoModel(boleto,
-                Arrays.asList("locaisDePagamento", "dataVencimento", "beneficiario.nomeBeneficiario",
-                        "beneficiario.documento", "beneficiario.agencia", "beneficiario.numeroConvenio",
-                        "beneficiario.conta", "dataEmissao", "numeroDocumento", "especieDocumento", "aceite",
-                        "beneficiario.nossoNumero", "beneficiario.digitoNossoNumero", "especieMoeda", "valorBoleto",
-                        "pagador.nome", "pagador.documento", "pagador.endereco.logradouro", "pagador.endereco.cep",
-                        "linhaDigitavel", "codigoBarras", "pagador.endereco.numero", "pagador.endereco.bairro",
-                        "pagador.endereco.cidade", "pagador.endereco.uf"));
+                Arrays.asList("locaisDePagamento",
+                        "dataVencimento",
+                        "beneficiario.nomeBeneficiario",
+                        "beneficiario.documento",
+                        "beneficiario.agencia",
+                        "beneficiario.numeroConvenio",
+                        "beneficiario.conta",
+                        "dataEmissao",
+                        "numeroDocumento",
+                        "especieDocumento",
+                        "aceite",
+                        "beneficiario.nossoNumero",
+                        "beneficiario.digitoNossoNumero",
+                        "especieMoeda",
+                        "valorBoleto",
+                        "pagador.nome",
+                        "pagador.documento",
+                        "pagador.endereco.logradouro",
+                        "pagador.endereco.cep",
+                        "linhaDigitavel",
+                        "codigoBarras",
+                        "pagador.endereco.numero",
+                        "pagador.endereco.bairro",
+                        "pagador.endereco.cidade",
+                        "pagador.endereco.uf"));
     }
 }

@@ -29,7 +29,7 @@ final class BradescoApiTest {
         configuracao.setClientId("9c228ae2-6277-4a8c-a26b-51223a0aaa09");
         configuracao.setCpfCnpj("38052160005701");
         configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
-        configuracao.setCaminhoCertificado("d:/teste/bradesco.pem");
+        configuracao.setCaminhoCertificado("d:/teste/bradesc.pem");
         boletoService = new BoletoService(BoletoBanco.BRADESCO_API, configuracao);
     }
 
@@ -56,7 +56,7 @@ final class BradescoApiTest {
 
     }
 
-    @Test
+//    @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
         final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);

@@ -3,6 +3,7 @@ package br.com.java_brasil.boleto.service.bancos.bradesco_api;
 import br.com.java_brasil.boleto.exception.BoletoException;
 import br.com.java_brasil.boleto.model.BoletoController;
 import br.com.java_brasil.boleto.model.BoletoModel;
+import br.com.java_brasil.boleto.model.RemessaRetornoModel;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIRequest;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoAPIResponse;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.model.BoletoBradescoModelConverter;
@@ -24,6 +25,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
+import javax.print.PrintService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,9 +48,20 @@ import static org.apache.http.HttpHeaders.*;
 public class BancoBradescoAPI extends BoletoController {
 
     @Override
-    public byte[] imprimirBoleto(@NonNull BoletoModel boletoModel) {
+    public byte[] imprimirBoletoJasper(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Não implementado!");
         //TODO Implementar Impressão
+    }
+
+    @Override
+    public void imprimirBoletoJasperDesktop(@NonNull BoletoModel boletoModel, boolean diretoImpressora,
+                                            PrintService printService) {
+        throw new BoletoException("Não implementado!");
+    }
+
+    @Override
+    public byte[] imprimirBoletoBanco(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
     @Override
@@ -185,12 +198,27 @@ public class BancoBradescoAPI extends BoletoController {
     }
 
     @Override
-    public BoletoModel alteraBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel alterarBoleto(@NonNull BoletoModel boletoModel) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 
     @Override
-    public BoletoModel consultaBoleto(@NonNull BoletoModel boletoModel) {
+    public BoletoModel consultarBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
+    @Override
+    public BoletoModel baixarBoleto(@NonNull BoletoModel boletoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
+    @Override
+    public String gerarArquivoRemessa(@NonNull List<RemessaRetornoModel> remessaRetornoModel) {
+        throw new BoletoException("Esta função não está disponível para este banco.");
+    }
+
+    @Override
+    public List<RemessaRetornoModel> importarArquivoRetorno(@NonNull String arquivo) {
         throw new BoletoException("Esta função não está disponível para este banco.");
     }
 

@@ -2,6 +2,7 @@ package br.com.java_brasil.boleto.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ public class Beneficiario implements Serializable {
 
     private String agencia;
     private String digitoAgencia;
+    private String postoDaAgencia;
 
     private String conta;
     private String digitoConta;
@@ -24,4 +26,8 @@ public class Beneficiario implements Serializable {
     private Endereco endereco;
 
     private String numeroConvenio;
+
+    public boolean isClienteCpf() {
+        return StringUtils.isNotBlank(documento) && documento.length() <= 11;
+    }
 }

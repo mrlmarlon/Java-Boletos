@@ -94,7 +94,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.repeat(" ", 9)); //Uso Exclusivo FEBRABA/CNAB: Preencher com espaços em branco
         linhaArquivo.append(list.get(0).getBoleto().getBeneficiario().isClienteCpf() ? "1" : "2"); //Tipo de Inscrição da Empresa. 1 = CPF e 2 = CNPJ
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDocumento(), 14, "0")); //Número de inscrição da Empresa
-        linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getNumeroConvenio(), 20, " "));  //Código do Convênio no Sicoob: Preencher com espaços em branco
+        linhaArquivo.append(StringUtils.rightPad(" ", 20, " "));  //Código do Convênio no Sicoob: Preencher com espaços em branco
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getAgencia(), 5, "0")); //Prefixo da Cooperativa
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, "0")); //Dígito verificador da Cooperativa
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
@@ -138,7 +138,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.repeat(" ", 40));
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(), 8, "0"));
         linhaArquivo.append(BoletoUtil.getDataFormato(LocalDate.now(), "ddMMyyyy"));
-        linhaArquivo.append(StringUtils.repeat(" ", 8));
+        linhaArquivo.append(StringUtils.repeat("0", 8));
         linhaArquivo.append(StringUtils.repeat(" ", 33));
         linhaArquivo.append((char) 13);
         linhaArquivo.append((char) 10);
@@ -551,29 +551,6 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaDigitavel.append(linhaParte5.toString());
 
         boletoModel.setLinhaDigitavel(linhaDigitavel.toString());
-
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorPercentualMulta())) {
-            String instrucaoMulta = "APOS VENCIMENTO COBRAR MULTA DE "
-                    + BoletoUtil.formatarCasasDecimais(boletoModel.getValorPercentualMulta(), 2) + "%";
-            boletoModel.getInstrucoes().add(new InformacaoModel(instrucaoMulta));
-        }
-
-        if (BoletoUtil.isNotNullEMaiorQZero(boletoModel.getValorPercentualJuros())) {
-            BigDecimal valorPercentualJuros = boletoModel.getValorPercentualJuros();
-            BigDecimal valorMoraDia = boletoModel.getValorPercentualJuros();
-            if (boletoModel.getTipoJuros().equals(TipoJurosEnum.PERCENTUAL_MENSAL)
-                    && BoletoUtil.isNotNullEMaiorQZero(valorPercentualJuros)) {
-                // Se informado percentual de juros mensal, deve dividir por 30 dias para se
-                // obter o percentual diário
-                valorPercentualJuros = valorPercentualJuros.divide(BigDecimal.valueOf(30), MathContext.DECIMAL32);
-                valorMoraDia = boletoModel.getValorBoleto().multiply(valorPercentualJuros, MathContext.DECIMAL32);
-                valorMoraDia = valorMoraDia.divide(BigDecimal.valueOf(100), MathContext.DECIMAL32);
-            }
-
-            String instrucaoJuros = "APOS VENCIMENTO COBRAR MORA DIARIA DE R$ "
-                    + BoletoUtil.formatarCasasDecimais(valorMoraDia, 2);
-            boletoModel.getInstrucoes().add(new InformacaoModel(instrucaoJuros));
-        }
 
         validaDadosImpressao(boletoModel);
     }

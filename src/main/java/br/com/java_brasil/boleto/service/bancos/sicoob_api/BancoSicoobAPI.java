@@ -15,7 +15,7 @@ import br.com.java_brasil.boleto.util.JasperUtil;
 import br.com.java_brasil.boleto.util.RestUtil;
 import br.com.java_brasil.boleto.util.ValidaUtils;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ import static org.apache.http.HttpHeaders.*;
 /**
  * Classe Generica para servir como base de Implementação
  */
-@Slf4j
+@Log
 public class BancoSicoobAPI extends BoletoController {
 
     @Override
@@ -74,7 +74,7 @@ public class BancoSicoobAPI extends BoletoController {
             BoletoSicoobBoleto request = BoletoSicoobModelConverter.montaBoletoRequest(boletoModel, configuracao);
 
             String json = RestUtil.ObjectToJson(Collections.singletonList(request));
-            log.debug("Json Envio Boleto: " + json);
+            log.config("Json Envio Boleto: " + json);
 
             Header[] headers = {
                     new BasicHeader(USER_AGENT, "PostmanRuntime/7.26.8"),
@@ -85,7 +85,7 @@ public class BancoSicoobAPI extends BoletoController {
             CloseableHttpResponse response = RestUtil.post(configuracao.getURLBase() + configuracao.getUrlRegistraBoleto(), headers, json);
 
             String retorno = RestUtil.validaResponseERetornaBody(response);
-            log.debug("Retorno Envio Boleto: " + retorno);
+            log.config("Retorno Envio Boleto: " + retorno);
             BoletoSicoobEnvioResponse boletoSicoobResponse = RestUtil.JsonToObject(retorno, BoletoSicoobEnvioResponse.class);
 
             BoletoSicoobBoleto boletoResponse = boletoSicoobResponse.getResultado().get(0).getBoleto();
@@ -155,7 +155,7 @@ public class BancoSicoobAPI extends BoletoController {
                             parametros, headers);
 
             String retorno = RestUtil.validaResponseERetornaBody(response);
-            log.debug("Retorno Consulta Boleto: " + retorno);
+            log.config("Retorno Consulta Boleto: " + retorno);
             BoletoSicoobConsultaResponse boletoSicoobResponse = RestUtil.JsonToObject(retorno, BoletoSicoobConsultaResponse.class);
 
             return BoletoSicoobModelConverter.montaBoletoResponse(boletoModel, boletoSicoobResponse.getResultado());
@@ -170,7 +170,7 @@ public class BancoSicoobAPI extends BoletoController {
         try {
             Optional.ofNullable(configuracao.getToken()).orElseThrow(() -> new BoletoException("Token não pode ser vazio."));
             if (configuracao.getExpiracaoToken() == null || configuracao.getExpiracaoToken().isBefore(LocalDateTime.now())) {
-                log.debug("Token existe porém está expirado. Executando RefreshToken.");
+                log.config("Token existe porém está expirado. Executando RefreshToken.");
                 Optional.ofNullable(configuracao.getRefreshToken()).orElseThrow(() -> new BoletoException("Refresh Token não pode ser vazio."));
                 SicoobUtil.refreshToken(configuracao);
             }

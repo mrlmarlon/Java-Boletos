@@ -10,17 +10,16 @@ import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.banrisul_api.BanrisulUtil;
 import br.com.java_brasil.boleto.service.bancos.banrisul_api.ConfiguracaoBanrisulAPI;
 import br.com.java_brasil.boleto.util.ValidaUtils;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +30,10 @@ final class BanrisulApiTest {
 
     @BeforeEach
     public void configuraTeste() {
+        Logger rootLog = Logger.getLogger("");
+        rootLog.setLevel( Level.CONFIG );
+        rootLog.getHandlers()[0].setLevel( Level.CONFIG );
+
         ConfiguracaoBanrisulAPI configuracao = new ConfiguracaoBanrisulAPI();
         configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
         configuracao.setCaminhoCertificado("D:/Temp/dacar.jks");
@@ -53,9 +56,6 @@ final class BanrisulApiTest {
     @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         // teste Sucesso (Não implementado)
         BoletoModel boletoModel = preencheBoleto();
         boletoModel = boletoService.enviarBoleto(boletoModel);
@@ -64,9 +64,6 @@ final class BanrisulApiTest {
     @Test
     @DisplayName("Testa Fator Data")
     void testaFatorData() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         // teste até 21/02/2025
         String retorno = BanrisulUtil.fatorData(LocalDate.of(2025, 2, 21));
         assertEquals("9999", retorno);
@@ -79,9 +76,6 @@ final class BanrisulApiTest {
     @Test
     @DisplayName("Testa Gera Dígito Nosso Número")
     void testaGeraDigitoNossoNumero() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         String digitoGerado = BanrisulUtil.geraDigitoNossoNumero("22200593");
         assertEquals("78", digitoGerado);
     }

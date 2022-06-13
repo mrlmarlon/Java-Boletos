@@ -10,7 +10,7 @@ import br.com.java_brasil.boleto.util.BoletoUtil;
 import br.com.java_brasil.boleto.util.JasperUtil;
 import br.com.java_brasil.boleto.util.ValidaUtils;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +23,7 @@ import java.math.MathContext;
 import java.util.List;
 import java.util.*;
 
-@Slf4j
+@Log
 public class BancoBanrisulAPI extends BoletoController {
 
     @Override
@@ -183,7 +183,7 @@ public class BancoBanrisulAPI extends BoletoController {
                 "</soap:Body>" +
                 "</soap:Envelope>";
 
-        log.debug("Xml Envio: " + xmlEnvio);
+        log.config("Xml Envio: " + xmlEnvio);
 
         return xmlEnvio;
     }

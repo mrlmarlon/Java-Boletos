@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,6 +22,10 @@ final class ExemploTest {
 
     @BeforeEach
     public void configuraTeste() {
+        Logger rootLog = Logger.getLogger("");
+        rootLog.setLevel( Level.CONFIG );
+        rootLog.getHandlers()[0].setLevel( Level.CONFIG );
+
         ConfiguracaoExemplo configuracao = new ConfiguracaoExemplo();
         configuracao.setUsuario("teste");
         configuracao.setSenha("123");

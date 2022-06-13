@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +24,10 @@ final class SicoobApiTest {
 
     @BeforeEach
     public void configuraTeste() {
+        Logger rootLog = Logger.getLogger("");
+        rootLog.setLevel( Level.CONFIG );
+        rootLog.getHandlers()[0].setLevel( Level.CONFIG );
+
         ConfiguracaoSicoobAPI configuracao = new ConfiguracaoSicoobAPI();
         configuracao.setClientId("mgS6gZLbT93COP2LgKFaSHF7sMQa");
         configuracao.setCpfCnpj("38052160005701");

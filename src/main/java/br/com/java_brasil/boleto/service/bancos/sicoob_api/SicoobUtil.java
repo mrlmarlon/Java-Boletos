@@ -3,7 +3,7 @@ package br.com.java_brasil.boleto.service.bancos.sicoob_api;
 import br.com.java_brasil.boleto.util.RestUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.apache.http.HttpHeaders.*;
 
-@Slf4j
+@Log
 public class SicoobUtil {
 
     public static String getUrlAutenticacao(ConfiguracaoSicoobAPI configuracao, String urlCallback) {
@@ -51,16 +51,16 @@ public class SicoobUtil {
         CloseableHttpResponse response = RestUtil.enviaComando(httpPost);
 
         String retorno = RestUtil.validaResponseERetornaBody(response);
-        log.debug("Retorno Token Sicoob: " + retorno);
+        log.config("Retorno Token Sicoob: " + retorno);
 
         JsonObject json = JsonParser.parseString(retorno).getAsJsonObject();
         String token = json.get("access_token").getAsString();
         String refreshToken = json.get("refresh_token").getAsString();
         LocalDateTime expires = LocalDateTime.now().plusSeconds(json.get("expires_in").getAsInt());
 
-        log.debug("Token Sicoob: " + token);
-        log.debug("Refresh Token Sicoob: " + refreshToken);
-        log.debug("Expiracao: " + expires);
+        log.config("Token Sicoob: " + token);
+        log.config("Refresh Token Sicoob: " + refreshToken);
+        log.config("Expiracao: " + expires);
 
         configuracao.setToken(token);
         configuracao.setRefreshToken(refreshToken);

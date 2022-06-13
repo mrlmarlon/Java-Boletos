@@ -14,6 +14,7 @@ import com.google.gson.JsonParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -44,7 +45,7 @@ import static org.apache.http.HttpHeaders.*;
 /**
  * Classe Generica para servir como base de Implementação
  */
-@Slf4j
+@Log
 public class BancoBradescoAPI extends BoletoController {
 
     @Override
@@ -113,7 +114,7 @@ public class BancoBradescoAPI extends BoletoController {
         String parametros = "";
 
         String json = RestUtil.ObjectToJson(boletoRequest);
-        log.debug("Json Envio Bradesco: " + json);
+        log.config("Json Envio Bradesco: " + json);
 
         String request = "POST\n" +
                 configuracao.getUrlRegistroBoleto() + "\n" +
@@ -123,7 +124,7 @@ public class BancoBradescoAPI extends BoletoController {
                 nonce + "\n" +
                 timestamp + "\n" +
                 "SHA256";
-        log.debug("Request Envio Bradesco: " + request);
+        log.config("Request Envio Bradesco: " + request);
 
         String assinatura = signSHA256RSA(configuracao, request);
 
@@ -140,7 +141,7 @@ public class BancoBradescoAPI extends BoletoController {
         CloseableHttpResponse response = RestUtil.post(configuracao.getURLBase() + configuracao.getUrlRegistroBoleto(),
                 headers, json);
         String retorno = RestUtil.validaResponseERetornaBody(response);
-        log.debug("Retorno Envio Bradesco: " + retorno);
+        log.config("Retorno Envio Bradesco: " + retorno);
         return RestUtil.JsonToObject(retorno, BoletoBradescoAPIResponse.class);
     }
 
@@ -161,14 +162,14 @@ public class BancoBradescoAPI extends BoletoController {
         CloseableHttpResponse response = RestUtil.enviaComando(httpPost);
 
         String retorno = RestUtil.validaResponseERetornaBody(response);
-        log.debug("Retorno Token Bradesco: " + retorno);
+        log.config("Retorno Token Bradesco: " + retorno);
 
         JsonObject json = JsonParser.parseString(retorno).getAsJsonObject();
         String token = json.get("access_token").getAsString();
         LocalDateTime expires = LocalDateTime.now().plusSeconds(json.get("expires_in").getAsInt());
 
-        log.debug("Token Bradesco: " + token);
-        log.debug("Expira: " + expires);
+        log.config("Token Bradesco: " + token);
+        log.config("Expira: " + expires);
 
         return token;
 

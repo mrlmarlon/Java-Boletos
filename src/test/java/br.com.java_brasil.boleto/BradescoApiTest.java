@@ -6,15 +6,15 @@ import br.com.java_brasil.boleto.model.enums.AmbienteEnum;
 import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.ConfiguracaoBradescoAPI;
 import br.com.java_brasil.boleto.util.ValidaUtils;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,11 +25,15 @@ final class BradescoApiTest {
 
     @BeforeEach
     public void configuraTeste() {
+        Logger rootLog = Logger.getLogger("");
+        rootLog.setLevel( Level.CONFIG );
+        rootLog.getHandlers()[0].setLevel( Level.CONFIG );
+
         ConfiguracaoBradescoAPI configuracao = new ConfiguracaoBradescoAPI();
         configuracao.setClientId("9c228ae2-6277-4a8c-a26b-51223a0aaa09");
         configuracao.setCpfCnpj("38052160005701");
         configuracao.setAmbiente(AmbienteEnum.HOMOLOGACAO);
-        configuracao.setCaminhoCertificado("d:/teste/bradesc.pem");
+        configuracao.setCaminhoCertificado("d:/teste/bradesco.pem");
         boletoService = new BoletoService(BoletoBanco.BRADESCO_API, configuracao);
     }
 
@@ -56,11 +60,9 @@ final class BradescoApiTest {
 
     }
 
-//    @Test
+    @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
         BoletoModel boletoModel = preencheBoleto();
         ValidaUtils.validaBoletoModel(boletoModel, this.boletoService.getConfiguracao().camposObrigatoriosBoleto());
         BoletoModel retorno = boletoService.enviarBoleto(boletoModel);

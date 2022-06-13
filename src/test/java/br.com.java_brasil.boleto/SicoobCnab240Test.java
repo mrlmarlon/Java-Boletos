@@ -8,17 +8,16 @@ import br.com.java_brasil.boleto.model.enums.TipoMultaEnum;
 import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.sicoob_cnab240.ConfiguracaoSicoobCnab240;
 import br.com.java_brasil.boleto.service.bancos.sicoob_cnab240.SicoobUtil;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,6 +28,10 @@ final class SicoobCnab240Test {
 
     @BeforeEach
     public void configuraTeste() {
+        Logger rootLog = Logger.getLogger("");
+        rootLog.setLevel( Level.CONFIG );
+        rootLog.getHandlers()[0].setLevel( Level.CONFIG );
+
         ConfiguracaoSicoobCnab240 configuracao = new ConfiguracaoSicoobCnab240();
         boletoService = new BoletoService(BoletoBanco.SICOOB_CNAB240, configuracao);
     }
@@ -42,9 +45,6 @@ final class SicoobCnab240Test {
     @Test
     @DisplayName("Testa Valida e Envia Boleto")
     void testaEnvioBoleto() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         // teste Sucesso (Não implementado)
         BoletoModel boletoModel = preencheBoleto();
         Throwable exception =
@@ -55,9 +55,6 @@ final class SicoobCnab240Test {
     @Test
     @DisplayName("Testa Fator Data")
     void testaFatorData() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         // teste até 21/02/2025
         String retorno = SicoobUtil.fatorData(LocalDate.of(2025, 2, 21));
         assertEquals("9999", retorno);
@@ -70,11 +67,8 @@ final class SicoobCnab240Test {
     @Test
     @DisplayName("Testa Gera Dígito Nosso Número")
     void testaGeraDigitoNossoNumero() {
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.DEBUG);
-
         Integer digitoGerado = SicoobUtil.geraDigitoNossoNumero(
-                "4342", "1457020","670");
+                "4342", "1457020", "670");
         assertEquals(3, digitoGerado);
     }
 
@@ -147,6 +141,5 @@ final class SicoobCnab240Test {
 
         return boleto;
     }
-
 
 }

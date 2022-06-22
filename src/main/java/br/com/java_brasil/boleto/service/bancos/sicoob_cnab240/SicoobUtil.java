@@ -242,6 +242,10 @@ public class SicoobUtil {
         }
     }
 
+    public static void main(String[] args) {
+
+    }
+
     /**
      * <p>Retorna um MAP com os possíveis Motivos Ocorrência com base na Ocorrência.</p>
      *

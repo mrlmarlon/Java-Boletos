@@ -8,11 +8,16 @@ import br.com.java_brasil.boleto.model.enums.TipoMultaEnum;
 import br.com.java_brasil.boleto.service.BoletoService;
 import br.com.java_brasil.boleto.service.bancos.sicoob_cnab240.ConfiguracaoSicoobCnab240;
 import br.com.java_brasil.boleto.service.bancos.sicoob_cnab240.SicoobUtil;
+import br.com.java_brasil.boleto.util.BoletoUtil;
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +45,16 @@ final class SicoobCnab240Test {
     @DisplayName("Testa Erro Configuracoes")
     void testaErroConfiguracoes() {
         //Não há campos na configuração para teste
+    }
+
+    @Test
+    void importaRetorno() throws IOException {
+        StringBuilder arquivo = new StringBuilder();
+        for (String linha : Files.readAllLines(Paths.get("d:/teste/sicoobretorno.ret"))) {
+            arquivo.append(linha).append(System.lineSeparator());
+        }
+        List<RemessaRetornoModel> remessaRetornoModels = boletoService.importarArquivoRetorno(arquivo.toString());
+        System.out.println(remessaRetornoModels);
     }
 
     @Test

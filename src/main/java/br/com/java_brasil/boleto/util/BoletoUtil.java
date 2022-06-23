@@ -1,15 +1,20 @@
 package br.com.java_brasil.boleto.util;
 
 import br.com.java_brasil.boleto.exception.BoletoException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -437,5 +442,30 @@ public class BoletoUtil {
 
         return codigoBarraI25.toString();
 
+    }
+
+    /**
+     * Faz dowload do pdf da url.
+     * Retorna o pdf em bytes
+     *
+     * @param urlLink
+     * @return
+     */
+    public static byte[] downloadFile(String urlLink) throws IOException {
+        byte[] toByteArray = new byte[0];
+        try {
+            URL url = new URL(urlLink);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.addRequestProperty("User-Agent", "Mozilla/4.76");
+            InputStream inputStream = httpURLConnection.getInputStream();
+            toByteArray = IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            URL url = new URL(urlLink.replace("https://", "http://"));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.addRequestProperty("User-Agent", "Mozilla/4.76");
+            InputStream inputStream = httpURLConnection.getInputStream();
+            toByteArray = IOUtils.toByteArray(inputStream);
+        }
+        return toByteArray;
     }
 }

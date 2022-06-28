@@ -3,6 +3,7 @@ package br.com.java_brasil.boleto.model;
 import br.com.java_brasil.boleto.service.bancos.banrisul_api.BancoBanrisulAPI;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.BancoBradescoAPI;
 import br.com.java_brasil.boleto.service.bancos.exemplo_api.BancoExemplo;
+import br.com.java_brasil.boleto.service.bancos.safe2pay_api.BancoSafe2PayAPI;
 import br.com.java_brasil.boleto.service.bancos.sicoob_api.BancoSicoobAPI;
 import br.com.java_brasil.boleto.service.bancos.sicoob_cnab240.BancoSicoobCnab240;
 import br.com.java_brasil.boleto.service.bancos.sicredi_cnab400.BancoSicrediCnab400;
@@ -17,7 +18,8 @@ public enum BoletoBanco {
     BANRISUL_API("Banrisul API", BancoBanrisulAPI.class),
     SICREDI_CNAB400("Sicredi CNAB400", BancoSicrediCnab400.class),
     SICOOB_CNAB240("Sicoob CNAB240", BancoSicoobCnab240.class),
-    SICOOB_API("Sicoob API", BancoSicoobAPI.class);
+    SICOOB_API("Sicoob API", BancoSicoobAPI.class),
+    SAFE2PAY_API("Safe2Pay API", BancoSafe2PayAPI.class);
 
     private final String descricao;
     private final Class<? extends BoletoController> controller;

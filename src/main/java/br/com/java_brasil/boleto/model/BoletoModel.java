@@ -81,5 +81,6 @@ public class BoletoModel implements Serializable {
     protected String pixTxidQrCode;
     protected String pixUrlQrCode;
     protected String pixCopiaCola;
+    protected String urlPdf;
 
 }

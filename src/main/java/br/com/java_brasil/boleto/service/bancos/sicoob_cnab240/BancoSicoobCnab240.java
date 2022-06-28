@@ -231,7 +231,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(" ");
             linhaArquivo.append(StringUtils.leftPad(boleto.getInstrucao(), 2, "0"));// Código de Movimento Remessa
             linhaArquivo.append(boleto.getBoleto().getPagador().isClienteCpf() ? "1" : "2");//Tipo de inscrição pagador
-            linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getDocumento(), 15, ""));
+            linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getDocumento(), 15, "0"));
 
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getNome(), 40, " ")); //Nome
 

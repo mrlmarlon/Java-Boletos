@@ -12,7 +12,7 @@ public class SicoobUtil {
     /**
      * <p>Retorna o Fator Vencimento com base na data informada.</p>
      *
-     * @param dataVencimento  LocalDate contendo a data de vencimento
+     * @param dataVencimento LocalDate contendo a data de vencimento
      * @return String com 4 dígitos contendo o fator para data informada
      */
     public static String fatorData(LocalDate dataVencimento) {
@@ -30,7 +30,7 @@ public class SicoobUtil {
     /**
      * <p>Cálculo Dígito Verificador módulo 11 Sicoob.</p>
      *
-     * @param codigo  String contendo o código
+     * @param codigo String contendo o código
      * @return Integer contendo o dígito verificador
      */
     public static Integer modulo11(String codigo) {
@@ -57,7 +57,7 @@ public class SicoobUtil {
     /**
      * <p>Cálculo Dígito Verificador módulo 10 Sicoob.</p>
      *
-     * @param codigo  String contendo o código
+     * @param codigo String contendo o código
      * @return Integer contendo o dígito verificador
      */
     public static Integer modulo10(String codigo) {
@@ -102,29 +102,29 @@ public class SicoobUtil {
     /**
      * <p>Gera o Dígito do Nosso Número.</p>
      *
-     * @param codigoAgencia String com o código da Agência do Beneficiário
+     * @param codigoAgencia      String com o código da Agência do Beneficiário
      * @param codigoBeneficiario String com o código do Beneficiário
-     * @param nossoNumero String contendo o Nosso Número (Sequencial de controle do emitente)
+     * @param nossoNumero        String contendo o Nosso Número (Sequencial de controle do emitente)
      * @return int com o Dígito do Nosso Número
      */
     public static int geraDigitoNossoNumero(String codigoAgencia,
-                                         String codigoBeneficiario,
-                                         String nossoNumero)  {
-            String digitoVerificador
-                    = StringUtils.leftPad(codigoAgencia, 4, "0")
-                    + StringUtils.leftPad(codigoBeneficiario, 10,  "0")
-                    + StringUtils.leftPad(nossoNumero, 7,"0");
+                                            String codigoBeneficiario,
+                                            String nossoNumero) {
+        String digitoVerificador
+                = StringUtils.leftPad(codigoAgencia, 4, "0")
+                + StringUtils.leftPad(codigoBeneficiario, 10, "0")
+                + StringUtils.leftPad(nossoNumero, 7, "0");
 
-            return digitoVerificadorNossoNumero(digitoVerificador);
+        return digitoVerificadorNossoNumero(digitoVerificador);
     }
 
     /**
      * <p>Cálculo Dígito Verificador Nosso Número Sicoob.</p>
      *
-     * @param codigo  String contendo o código
+     * @param codigo String contendo o código
      * @return Integer contendo o dígito verificador
      */
-    public static Integer digitoVerificadorNossoNumero(String codigo)  {
+    public static Integer digitoVerificadorNossoNumero(String codigo) {
         try {
             int total = 0;
             int peso = 3;
@@ -229,9 +229,9 @@ public class SicoobUtil {
     /**
      * <p>Retorna a Descrição da Ocorrência com base no código.</p>
      *
-     * @param ocorrencia  String com dois dígitos para ocorrência
+     * @param ocorrencia String com dois dígitos para ocorrência
      * @return Descrição da Ocorrência com base no código passado,
-     *  "Ocorrência não catalogada" caso não localizada
+     * "Ocorrência não catalogada" caso não localizada
      */
     public static String getOcorrencia(String ocorrencia) {
         try {
@@ -249,174 +249,212 @@ public class SicoobUtil {
     /**
      * <p>Retorna um MAP com os possíveis Motivos Ocorrência com base na Ocorrência.</p>
      *
-     * @param ocorrencia  String com dois dígitos para ocorrência
+     * @param ocorrencia String com dois dígitos para ocorrência
      * @return Map<String, String> com os possíveis Motivos Ocorrência
      */
     public static Map<String, String> getMapMotivoOcorrencia(String ocorrencia) {
         try {
             Map<String, String> map = new HashMap<>();
-            if (ocorrencia.equals("02")
-                    || ocorrencia.equals("03")
-                    || ocorrencia.equals("26")
-                    || ocorrencia.equals("30")) {
-                map.put("39", "Pedido de Protesto/Negativação Não Permitido para o Título");
-                map.put("40", "Título com Ordem de Protesto/Negativação Emitida");
-                map.put("41", "Pedido de Cancelamento/Sustação para Títulos sem Instrução de Negativação/Protesto");
-                map.put("58", "Data da Multa Inválida");
-                map.put("79", "Data Juros de Mora Inválido");
-            } else if (ocorrencia.equals("28")) {
-                map.put("03", "Tarifa de Desistência");
-                map.put("04", "Tarifa de protesto");
-                map.put("08", "Custas de protesto");
-                map.put("11", "Forma de Cadastramento do Título Inválido");
-                map.put("21", "Tarifa de Gravação Eletrônica = CRA");
-            } else {
-                map.put("AA", "Controle inválido");
-                map.put("AB", "Tipo de operação inválido");
-                map.put("AC", "Tipo de seriço inválido");
-                map.put("AD", "Forma de lançamento inválida");
-                map.put("AE", "Tipo/Número de inscrição inválido");
-                map.put("AF", "Código de convênio inválido");
-                map.put("AG", "Agência/conta/dígito inválidos");
-                map.put("AH", "Nosso número seguencial do registro no lote inválido");
-                map.put("AI", "Código de segmento de detalhe inválido");
-                map.put("AJ", "Tipo de movimento inválido");
-                map.put("AK", "Código da camâra de compensação do banco favorecido inválido");
-                map.put("AL", "Código do banco favorecido, instituição de pagamento ou depositário inválido");
-                map.put("AM", "Agência mantenedora da conta corrente do favorecido inválida");
-                map.put("AN", "Conta corrente/DV/Conta de pagamento do favorecido inválido");
-                map.put("AO", "Nome do favorecido não informado");
-                map.put("AP", "Data lançamento inválido");
-                map.put("AQ", "Tipo/Quantidade da moeda inválido");
-                map.put("AR", "Valor do lançamento inválido");
-                map.put("AS", "Aviso ao favorecido - identificação inválida");
-                map.put("AT", "Tipo/Número de incrição do favorecido inválido");
-                map.put("AU", "Logradouro do favorecido não informado");
-                map.put("AV", "Nº do local do favorecido não informado");
-                map.put("AW", "Cidade do favorecido não informada");
-                map.put("AX", "CEP/Complemento do favorecido inválido");
-                map.put("AY", "Sigla do estado do favorecido inválida");
-                map.put("AZ", "Código/Nome do banco depositário inválido");
-                map.put("BA", "Código/Nome agência depositária não inforamdo");
-                map.put("BB", "Seu número inválido");
-                map.put("BC", "Nosso número inválido");
-                map.put("BD", "Inclusão efetuada com sucesso");
-                map.put("BE", "Alteração efetuada com sucesso");
-                map.put("BF", "Exclusão efetuada com sucesso");
-                map.put("BG", "Agência/Conta impedida legalmente/bloqueada");
-                map.put("BH", "Empresa não pagou salário");
-                map.put("BI", "Falecimento do mutuário");
-                map.put("BJ", "Empresa não envio remessa do mutuário");
-                map.put("BK", "Empresa não enviou remessa no vencimento");
-                map.put("BL", "Valor da parcela inválida");
-                map.put("BM", "Identificação do contrato inválida");
-                map.put("BN", "Operação de consignação incluida com sucesso");
-                map.put("BO", "Operação de consignação alterada com sucesso");
-                map.put("BP", "Operação de consignação excluida com sucesso");
-                map.put("BQ", "Operação de consignação liquidada com sucesso");
-                map.put("BR", "Reativação efetuada com sucesso");
-                map.put("BS", "Suspenção efetuada com sucesso");
-                map.put("CA", "Código de barras - Código de banco inválido");
-                map.put("CB", "Código de barras - Código da moeda inválido");
-                map.put("CC", "Código de barras - Dígito verificador geral inválido");
-                map.put("CD", "Código de barras - Valor do título inválido");
-                map.put("CE", "Código de barras - Campo livre inválido");
-                map.put("CF", "Valor do documento inválido");
-                map.put("CG", "Valor do abatimento inválido");
-                map.put("CH", "Valor do desconto inválido");
-                map.put("CI", "Valor de mora inválido");
-                map.put("CJ", "Valor da multa inválido");
-                map.put("CK", "Valor do IR inválido");
-                map.put("CL", "Valor do ISS inválido");
-                map.put("CM", "Valor do IOF inválido");
-                map.put("CN", "Valor de outras deduções inválido");
-                map.put("CO", "Valor de outros acrescimos inválido");
-                map.put("CP", "Valor do INSS inválido");
-                map.put("HA", "Lote não aceito");
-                map.put("HB", "Inscrição da empresa inválido para o contrato");
-                map.put("HC", "Convénio com a empresa inexistente/inválido para o contrato");
-                map.put("HD", "Agência/Conta corrente da empresa inexistente/inválido para o contrato");
-                map.put("HE", "Tipo de serviço inválido para o contrato");
-                map.put("HF", "Conta corrente da empresa com saldo insuficiente");
-                map.put("HG", "Lote de serviço fora de seguencia");
-                map.put("HH", "Lote de serviço inválido");
-                map.put("HI", "Arquivo não aceito");
-                map.put("HJ", "Tipo de registo inválido");
-                map.put("HK", "Código remessa/retorno inválido");
-                map.put("HL", "Versão de Layout inválida");
-                map.put("HM", "Mutuário não identificado");
-                map.put("HN", "Tipo do benefício não permitido emprestimo");
-                map.put("HO", "Benefício cessado/suspenso");
-                map.put("HP", "Benefício possui representante legal");
-                map.put("HQ", "Benefício é do tipo PA(Pensão alimenticia)");
-                map.put("HR", "Quantidade de contratos permitida exedida");
-                map.put("HS", "Benefício não pertence ao banco informado");
-                map.put("HT", "Inicio do desconto informado já ultrapasado");
-                map.put("HU", "Número da parcela inválida");
-                map.put("HV", "Quantidade de parcela inválida");
-                map.put("HW", "Marggem consignavel excedida para o mutuário dentro do prazo do contrato");
-                map.put("HX", "Empréstimo já cadastrado");
-                map.put("HY", "Empréstimo inexistente");
-                map.put("HZ", "Empréstimo já encerrado");
-                map.put("H1", "Arquivo sem Traler");
-                map.put("H2", "Mutuário sem crédito na competencia");
-                map.put("H3", "Não descontato - Outros motivos");
-                map.put("H4", "Retorno de crédito não pago");
-                map.put("H5", "Cancelamento de empréstimo retroativo");
-                map.put("H6", "Outros motivos de Glosa");
-                map.put("H7", "Margem consignavel exedida para o mutuário acima do prazo de contrato");
-                map.put("H8", "Mutuário desligado do empregador");
-                map.put("H9", "Mutuário afastado por licença");
-                map.put("IA", "Primeiro nome do mutuário diferente do primento nome do movimento do censo ou diferente da base de titular do beneficio");
-                map.put("IB", "Benefício suspenso/cessado pela APS ou SISOBI");
-                map.put("IC", "Benefício suspenso por dependencia de calculo");
-                map.put("ID", "Benefício suspenso/cessado pela inspetoria/auditoria");
-                map.put("IE", "Benefício bloqueado para emprestimo pelo beneficiario");
-                map.put("IF", "Benefício bloqueado para emprestimo por TBM");
-                map.put("IG", "Benefício esta em fase de concessão de PA ou desdobramento");
-                map.put("IH", "Benefício sessado por óbito");
-                map.put("II", "Benefício sessado por fraude");
-                map.put("IJ", "Benefício sessado por concessão de outro benefício");
-                map.put("IK", "Benefício sessado: estatutário transferido para órgão de origem");
-                map.put("IL", "Emprestimo suspenso pela APS");
-                map.put("IM", "Empréstimo cancelado pelo banco");
-                map.put("IN", "Crédito transformado em PAB");
-                map.put("IO", "Término da consignação foi alterado");
-                map.put("IP", "Fim do empréstimo ocorreu durante perído de suspensão ou concessão");
-                map.put("IQ", "Empréstimo suspenso pelo banco");
-                map.put("IR", "Não haverbação de contrato - Quantidade de parcelas/competencias informadas ultrapassou a data limite da extinsão de cota do dependente título de beneficions ");
-                map.put("TA", "Lote não aceito - Totais do lote com diferença");
-                map.put("YA", "Título não encontrato");
-                map.put("YB", "Identificador registro opcional inválido");
-                map.put("YC", "Código padrão inválido");
-                map.put("YD", "Código de ocorrencia inválido");
-                map.put("YE", "Complemento de ocorrencia inválido");
-                map.put("YF", "Alegação já informada");
-                map.put("ZA", "Agência/Conta do favorecido substituida");
-                map.put("ZB", "Divergencia entre o primeiro e último do beneficiario versus primento e último nome na receita federal");
-                map.put("ZC", "Confirmação de antecipação de valor");
-                map.put("ZD", "Antecipação parcial de valor");
-                map.put("ZE", "Título bloqueado na base");
-                map.put("ZF", "Sistema em contingência - título valor maior que referencia");
-                map.put("ZG", "Sistema em contingência - título vencido");
-                map.put("ZH", "Sistema em contigência - título indexado");
-                map.put("ZI", "Beneficiario divergente");
-                map.put("ZJ", "Limite de pagamento parciais exedido");
-                map.put("ZK", "Boleto já liquidado");
-                map.put("PA", "PIX não efetivado");
-                map.put("PB", "Transação interrompida devido a erro no PSP do recebedor");
-                map.put("PC", "Número da conta transacional encerrada no PSP do recebedor");
-                map.put("PD", "Tipo incorreto para a conta transacional especificada");
-                map.put("PE", "Tipo de transação não é suportado-autorizado na conta transacional especificada");
-                map.put("PF", "CPF/CNPJ do usuário recebedor não é consistente com o título da conta transacional especificada");
-                map.put("PG", "CPF/CNPJ do usuári recebedor incorreta");
-                map.put("PH", "Ordem rejeitada pelo PSP do recebedor");
-                map.put("PI", "ISPB do PSP do pagador inválido ou inexistente");
-                map.put("PJ", "Chave não cadastrada no DICT");
-                map.put("PK", "QR-CODE inválido/vencido");
-                map.put("PL", "Forma de iniciação inválida");
-                map.put("PM", "Chave de pagamento inválida");
-                map.put("PN", "Chave de pagamento não informada");
+            switch (ocorrencia) {
+                case "02":
+                case "03":
+                case "26":
+                case "30":
+                    map.put("02", "Código do registro detalhe inválido");
+                    map.put("03", "Código da ocorrência inválida");
+                    map.put("04", "Código de ocorrência não permitida para a carteira");
+                    map.put("05", "Código de ocorrência não numérico");
+                    map.put("07", "Agência/conta/Digito - |Inválido");
+                    map.put("08", "Nosso número inválido");
+                    map.put("09", "Nosso número duplicado");
+                    map.put("10", "Carteira inválida");
+                    map.put("13", "Identificação da emissão do bloqueto inválida (NOVO)");
+                    map.put("16", "Data de vencimento inválida");
+                    map.put("18", "Vencimento fora do prazo de operação");
+                    map.put("20", "Valor do Título inválido");
+                    map.put("21", "Espécie do Título inválida");
+                    map.put("22", "Espécie não permitida para a carteira");
+                    map.put("24", "Data de emissão inválida");
+                    map.put("28", "Código do desconto inválido (NOVO)");
+                    map.put("38", "Prazo para protesto/ Negativação inválido (ALTERADO)");
+                    map.put("39", "Pedido de Protesto/Negativação Não Permitido para o Título");
+                    map.put("40", "Título com Ordem de Protesto/Negativação Emitida");
+                    map.put("41", "Pedido de Cancelamento/Sustação para Títulos sem Instrução de Negativação/Protesto");
+                    map.put("44", "Agência Beneficiário não prevista");
+                    map.put("45", "Nome do pagador não informado (NOVO)");
+                    map.put("46", "Tipo/número de inscrição do pagador inválidos (NOVO)");
+                    map.put("47", "Endereço do pagador não informado (NOVO)");
+                    map.put("48", "CEP Inválido (NOVO)");
+                    map.put("50", "CEP irregular - Banco Correspondente");
+                    map.put("58", "Data da Multa Inválida");
+                    map.put("63", "Entrada para Título já cadastrado");
+                    map.put("65", "Limite excedido (NOVO)");
+                    map.put("66", "Número autorização inexistente (NOVO)");
+                    map.put("68", "Débito não agendado - erro nos dados de remessa");
+                    map.put("69", "Débito não agendado - Pagador não consta no cadastro de autorizante");
+                    map.put("70", "Débito não agendado - Beneficiário não autorizado pelo Pagador");
+                    map.put("71", "Débito não agendado - Beneficiário não participa do débito Automático");
+                    map.put("72", "Débito não agendado - Código de moeda diferente de R$");
+                    map.put("73", "Débito não agendado - Data de vencimento inválida");
+                    map.put("74", "Débito não agendado - Conforme seu pedido, Título não registrado");
+                    map.put("75", "Débito não agendado – Tipo de número de inscrição do debitado inválido");
+                    map.put("79", "Data Juros de Mora Inválido");
+                    break;
+                case "28":
+                    map.put("03", "Tarifa de Desistência");
+                    map.put("04", "Tarifa de protesto");
+                    map.put("08", "Custas de protesto");
+                    map.put("11", "Forma de Cadastramento do Título Inválido");
+                    map.put("21", "Tarifa de Gravação Eletrônica = CRA");
+                    break;
+                default:
+                    map.put("AA", "Controle inválido");
+                    map.put("AB", "Tipo de operação inválido");
+                    map.put("AC", "Tipo de seriço inválido");
+                    map.put("AD", "Forma de lançamento inválida");
+                    map.put("AE", "Tipo/Número de inscrição inválido");
+                    map.put("AF", "Código de convênio inválido");
+                    map.put("AG", "Agência/conta/dígito inválidos");
+                    map.put("AH", "Nosso número seguencial do registro no lote inválido");
+                    map.put("AI", "Código de segmento de detalhe inválido");
+                    map.put("AJ", "Tipo de movimento inválido");
+                    map.put("AK", "Código da camâra de compensação do banco favorecido inválido");
+                    map.put("AL", "Código do banco favorecido, instituição de pagamento ou depositário inválido");
+                    map.put("AM", "Agência mantenedora da conta corrente do favorecido inválida");
+                    map.put("AN", "Conta corrente/DV/Conta de pagamento do favorecido inválido");
+                    map.put("AO", "Nome do favorecido não informado");
+                    map.put("AP", "Data lançamento inválido");
+                    map.put("AQ", "Tipo/Quantidade da moeda inválido");
+                    map.put("AR", "Valor do lançamento inválido");
+                    map.put("AS", "Aviso ao favorecido - identificação inválida");
+                    map.put("AT", "Tipo/Número de incrição do favorecido inválido");
+                    map.put("AU", "Logradouro do favorecido não informado");
+                    map.put("AV", "Nº do local do favorecido não informado");
+                    map.put("AW", "Cidade do favorecido não informada");
+                    map.put("AX", "CEP/Complemento do favorecido inválido");
+                    map.put("AY", "Sigla do estado do favorecido inválida");
+                    map.put("AZ", "Código/Nome do banco depositário inválido");
+                    map.put("BA", "Código/Nome agência depositária não inforamdo");
+                    map.put("BB", "Seu número inválido");
+                    map.put("BC", "Nosso número inválido");
+                    map.put("BD", "Inclusão efetuada com sucesso");
+                    map.put("BE", "Alteração efetuada com sucesso");
+                    map.put("BF", "Exclusão efetuada com sucesso");
+                    map.put("BG", "Agência/Conta impedida legalmente/bloqueada");
+                    map.put("BH", "Empresa não pagou salário");
+                    map.put("BI", "Falecimento do mutuário");
+                    map.put("BJ", "Empresa não envio remessa do mutuário");
+                    map.put("BK", "Empresa não enviou remessa no vencimento");
+                    map.put("BL", "Valor da parcela inválida");
+                    map.put("BM", "Identificação do contrato inválida");
+                    map.put("BN", "Operação de consignação incluida com sucesso");
+                    map.put("BO", "Operação de consignação alterada com sucesso");
+                    map.put("BP", "Operação de consignação excluida com sucesso");
+                    map.put("BQ", "Operação de consignação liquidada com sucesso");
+                    map.put("BR", "Reativação efetuada com sucesso");
+                    map.put("BS", "Suspenção efetuada com sucesso");
+                    map.put("CA", "Código de barras - Código de banco inválido");
+                    map.put("CB", "Código de barras - Código da moeda inválido");
+                    map.put("CC", "Código de barras - Dígito verificador geral inválido");
+                    map.put("CD", "Código de barras - Valor do título inválido");
+                    map.put("CE", "Código de barras - Campo livre inválido");
+                    map.put("CF", "Valor do documento inválido");
+                    map.put("CG", "Valor do abatimento inválido");
+                    map.put("CH", "Valor do desconto inválido");
+                    map.put("CI", "Valor de mora inválido");
+                    map.put("CJ", "Valor da multa inválido");
+                    map.put("CK", "Valor do IR inválido");
+                    map.put("CL", "Valor do ISS inválido");
+                    map.put("CM", "Valor do IOF inválido");
+                    map.put("CN", "Valor de outras deduções inválido");
+                    map.put("CO", "Valor de outros acrescimos inválido");
+                    map.put("CP", "Valor do INSS inválido");
+                    map.put("HA", "Lote não aceito");
+                    map.put("HB", "Inscrição da empresa inválido para o contrato");
+                    map.put("HC", "Convénio com a empresa inexistente/inválido para o contrato");
+                    map.put("HD", "Agência/Conta corrente da empresa inexistente/inválido para o contrato");
+                    map.put("HE", "Tipo de serviço inválido para o contrato");
+                    map.put("HF", "Conta corrente da empresa com saldo insuficiente");
+                    map.put("HG", "Lote de serviço fora de seguencia");
+                    map.put("HH", "Lote de serviço inválido");
+                    map.put("HI", "Arquivo não aceito");
+                    map.put("HJ", "Tipo de registo inválido");
+                    map.put("HK", "Código remessa/retorno inválido");
+                    map.put("HL", "Versão de Layout inválida");
+                    map.put("HM", "Mutuário não identificado");
+                    map.put("HN", "Tipo do benefício não permitido emprestimo");
+                    map.put("HO", "Benefício cessado/suspenso");
+                    map.put("HP", "Benefício possui representante legal");
+                    map.put("HQ", "Benefício é do tipo PA(Pensão alimenticia)");
+                    map.put("HR", "Quantidade de contratos permitida exedida");
+                    map.put("HS", "Benefício não pertence ao banco informado");
+                    map.put("HT", "Inicio do desconto informado já ultrapasado");
+                    map.put("HU", "Número da parcela inválida");
+                    map.put("HV", "Quantidade de parcela inválida");
+                    map.put("HW", "Marggem consignavel excedida para o mutuário dentro do prazo do contrato");
+                    map.put("HX", "Empréstimo já cadastrado");
+                    map.put("HY", "Empréstimo inexistente");
+                    map.put("HZ", "Empréstimo já encerrado");
+                    map.put("H1", "Arquivo sem Traler");
+                    map.put("H2", "Mutuário sem crédito na competencia");
+                    map.put("H3", "Não descontato - Outros motivos");
+                    map.put("H4", "Retorno de crédito não pago");
+                    map.put("H5", "Cancelamento de empréstimo retroativo");
+                    map.put("H6", "Outros motivos de Glosa");
+                    map.put("H7", "Margem consignavel exedida para o mutuário acima do prazo de contrato");
+                    map.put("H8", "Mutuário desligado do empregador");
+                    map.put("H9", "Mutuário afastado por licença");
+                    map.put("IA", "Primeiro nome do mutuário diferente do primento nome do movimento do censo ou diferente da base de titular do beneficio");
+                    map.put("IB", "Benefício suspenso/cessado pela APS ou SISOBI");
+                    map.put("IC", "Benefício suspenso por dependencia de calculo");
+                    map.put("ID", "Benefício suspenso/cessado pela inspetoria/auditoria");
+                    map.put("IE", "Benefício bloqueado para emprestimo pelo beneficiario");
+                    map.put("IF", "Benefício bloqueado para emprestimo por TBM");
+                    map.put("IG", "Benefício esta em fase de concessão de PA ou desdobramento");
+                    map.put("IH", "Benefício sessado por óbito");
+                    map.put("II", "Benefício sessado por fraude");
+                    map.put("IJ", "Benefício sessado por concessão de outro benefício");
+                    map.put("IK", "Benefício sessado: estatutário transferido para órgão de origem");
+                    map.put("IL", "Emprestimo suspenso pela APS");
+                    map.put("IM", "Empréstimo cancelado pelo banco");
+                    map.put("IN", "Crédito transformado em PAB");
+                    map.put("IO", "Término da consignação foi alterado");
+                    map.put("IP", "Fim do empréstimo ocorreu durante perído de suspensão ou concessão");
+                    map.put("IQ", "Empréstimo suspenso pelo banco");
+                    map.put("IR", "Não haverbação de contrato - Quantidade de parcelas/competencias informadas ultrapassou a data limite da extinsão de cota do dependente título de beneficions ");
+                    map.put("TA", "Lote não aceito - Totais do lote com diferença");
+                    map.put("YA", "Título não encontrato");
+                    map.put("YB", "Identificador registro opcional inválido");
+                    map.put("YC", "Código padrão inválido");
+                    map.put("YD", "Código de ocorrencia inválido");
+                    map.put("YE", "Complemento de ocorrencia inválido");
+                    map.put("YF", "Alegação já informada");
+                    map.put("ZA", "Agência/Conta do favorecido substituida");
+                    map.put("ZB", "Divergencia entre o primeiro e último do beneficiario versus primento e último nome na receita federal");
+                    map.put("ZC", "Confirmação de antecipação de valor");
+                    map.put("ZD", "Antecipação parcial de valor");
+                    map.put("ZE", "Título bloqueado na base");
+                    map.put("ZF", "Sistema em contingência - título valor maior que referencia");
+                    map.put("ZG", "Sistema em contingência - título vencido");
+                    map.put("ZH", "Sistema em contigência - título indexado");
+                    map.put("ZI", "Beneficiario divergente");
+                    map.put("ZJ", "Limite de pagamento parciais exedido");
+                    map.put("ZK", "Boleto já liquidado");
+                    map.put("PA", "PIX não efetivado");
+                    map.put("PB", "Transação interrompida devido a erro no PSP do recebedor");
+                    map.put("PC", "Número da conta transacional encerrada no PSP do recebedor");
+                    map.put("PD", "Tipo incorreto para a conta transacional especificada");
+                    map.put("PE", "Tipo de transação não é suportado-autorizado na conta transacional especificada");
+                    map.put("PF", "CPF/CNPJ do usuário recebedor não é consistente com o título da conta transacional especificada");
+                    map.put("PG", "CPF/CNPJ do usuári recebedor incorreta");
+                    map.put("PH", "Ordem rejeitada pelo PSP do recebedor");
+                    map.put("PI", "ISPB do PSP do pagador inválido ou inexistente");
+                    map.put("PJ", "Chave não cadastrada no DICT");
+                    map.put("PK", "QR-CODE inválido/vencido");
+                    map.put("PL", "Forma de iniciação inválida");
+                    map.put("PM", "Chave de pagamento inválida");
+                    map.put("PN", "Chave de pagamento não informada");
+                    break;
             }
 
             return map;
@@ -428,10 +466,10 @@ public class SicoobUtil {
     /**
      * <p>Retorna a Descrição do Motivo Ocorrência com base no código.</p>
      *
-     * @param ocorrencia  String com dois dígitos para Ocorrência
+     * @param ocorrencia       String com dois dígitos para Ocorrência
      * @param motivoOcorrencia String com dois dígitos para Motivo Ocorrência
      * @return Descrição da Ocorrência com base no código passado,
-     * 	 * "Motivo Ocorrência não catalogada" caso não localizada
+     * * "Motivo Ocorrência não catalogada" caso não localizada
      */
     public static String getMotivoOcorrenciaSicredi(String ocorrencia, String motivoOcorrencia) {
         try {
@@ -445,7 +483,7 @@ public class SicoobUtil {
     /**
      * <p>Verifica se o caracter informado é valido para o Banco Sicoob.</p>
      *
-     * @param ch  char
+     * @param ch char
      * @return Verdadeiro se o Banco aceita o caracter ou false se não
      */
     public static boolean isASCIISicoob(char ch) {

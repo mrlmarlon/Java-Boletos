@@ -96,7 +96,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDocumento(), 14, "0")); //Número de inscrição da Empresa
         linhaArquivo.append(StringUtils.rightPad(" ", 20, " "));  //Código do Convênio no Sicoob: Preencher com espaços em branco
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getAgencia(), 5, "0")); //Prefixo da Cooperativa
-        linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, "0")); //Dígito verificador da Cooperativa
+        linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, " ")); //Dígito verificador da Cooperativa
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoConta(), 1, "0"));//Dígito da conta
         linhaArquivo.append("0"); //Dígito verificador ag/conta
@@ -129,7 +129,7 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDocumento(), 15, "0")); //Número de inscrição da Empresa
         linhaArquivo.append(StringUtils.repeat(" ", 20)); //Código do Convênio no Sicoob: Preencher com espaços em branco
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getAgencia(), 5, "0")); //Prefixo da Cooperativa
-        linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, "0")); //Dígito verificador da Cooperativa
+        linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, " ")); //Dígito verificador da Cooperativa
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoConta(), 1, "0"));//Dígito da conta
         linhaArquivo.append(" "); //Dígito verificador ag/conta
@@ -156,7 +156,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(" "); //em branco 1
             linhaArquivo.append(StringUtils.leftPad(boleto.getInstrucao(), 2, "0"));// Código de Movimento Remessa
             linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getAgencia(), 5, "0")); //Prefixo da Cooperativa
-            linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, "0")); //Dígito verificador da Cooperativa
+            linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getDigitoAgencia(), 1, " ")); //Dígito verificador da Cooperativa
             linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
             linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoConta(), 1, "0"));//Dígito da conta
             linhaArquivo.append(" "); //Dígito verificador ag/conta
@@ -242,7 +242,7 @@ public class BancoSicoobCnab240 extends BoletoController {
             }
             linhaArquivo.append(StringUtils.rightPad(enderecoCompleto, 40, " "));
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getBairro(), 15, " "));
-            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCep(), 8, " "));
+            linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getEndereco().getCep(), 8, "0"));
             linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCidade(), 15, " "));
             linhaArquivo.append(boleto.getBoleto().getPagador().getEndereco().getUf());
 

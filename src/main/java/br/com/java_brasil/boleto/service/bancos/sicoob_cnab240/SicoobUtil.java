@@ -260,6 +260,7 @@ public class SicoobUtil {
                 case "03":
                 case "26":
                 case "30":
+                    map.put("00", "");
                     map.put("02", "Código do registro detalhe inválido");
                     map.put("03", "Código da ocorrência inválida");
                     map.put("04", "Código de ocorrência não permitida para a carteira");
@@ -301,6 +302,7 @@ public class SicoobUtil {
                     map.put("79", "Data Juros de Mora Inválido");
                     break;
                 case "28":
+                    map.put("00", "");
                     map.put("03", "Tarifa de Desistência");
                     map.put("04", "Tarifa de protesto");
                     map.put("08", "Custas de protesto");
@@ -308,6 +310,7 @@ public class SicoobUtil {
                     map.put("21", "Tarifa de Gravação Eletrônica = CRA");
                     break;
                 default:
+                    map.put("00", "");
                     map.put("AA", "Controle inválido");
                     map.put("AB", "Tipo de operação inválido");
                     map.put("AC", "Tipo de seriço inválido");

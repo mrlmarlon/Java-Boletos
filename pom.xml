@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java-boletos</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Java-Boletos</name>
     <description>Biblioteca java para Boletos</description>
     <url>https://github.com/Java-Brasil/Java-Boletos</url>
@@ -19,7 +19,7 @@
         <url>git@github.com:Samuel-Oliveira/Java_NFe.git</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_NFe.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_NFe.git</developerConnection>
-        <tag>java-boletos-1.0.1</tag>
+        <tag>java-nfe</tag>
     </scm>
 
     <properties>

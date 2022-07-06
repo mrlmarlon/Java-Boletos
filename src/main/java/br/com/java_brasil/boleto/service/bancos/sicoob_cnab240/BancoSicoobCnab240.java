@@ -100,7 +100,8 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoConta(), 1, "0"));//Dígito da conta
         linhaArquivo.append("0"); //Dígito verificador ag/conta
-        linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getNomeBeneficiario(), 30, " "));//Nome da Empresa
+        linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(list.get(0).getBoleto().getBeneficiario().getNomeBeneficiario(),30), 30, " "));
+        //Nome da Empresa
         linhaArquivo.append(StringUtils.rightPad("SICOOB", 30, " "));//Nome do Banco
         linhaArquivo.append(StringUtils.repeat(" ", 10));//Uso Exclusivo FEBRABA/CNAB: Preencher com espaços em branco
         linhaArquivo.append("1"); //Código Remessa / Retorno: "1"
@@ -133,7 +134,8 @@ public class BancoSicoobCnab240 extends BoletoController {
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getConta(), 12, "0"));//Número da Conta
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getBoleto().getBeneficiario().getDigitoConta(), 1, "0"));//Dígito da conta
         linhaArquivo.append(" "); //Dígito verificador ag/conta
-        linhaArquivo.append(StringUtils.rightPad(list.get(0).getBoleto().getBeneficiario().getNomeBeneficiario(), 30, " "));//Nome da Empresa
+        linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(list.get(0).getBoleto().getBeneficiario().getNomeBeneficiario(),30), 30, " "));
+        //Nome da Empresa
         linhaArquivo.append(StringUtils.repeat(" ", 40));
         linhaArquivo.append(StringUtils.repeat(" ", 40));
         linhaArquivo.append(StringUtils.leftPad(list.get(0).getNumeroRemessa(), 8, "0"));
@@ -233,23 +235,24 @@ public class BancoSicoobCnab240 extends BoletoController {
             linhaArquivo.append(boleto.getBoleto().getPagador().isClienteCpf() ? "1" : "2");//Tipo de inscrição pagador
             linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getDocumento(), 15, "0"));
 
-            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getNome(), 40, " ")); //Nome
+            linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(boleto.getBoleto().getPagador().getNome(),40), 40, " ")); //Nome
 
             String enderecoCompleto = boleto.getBoleto().getPagador().getEndereco().getLogradouro();
             enderecoCompleto = enderecoCompleto + ", " + boleto.getBoleto().getPagador().getEndereco().getNumero();
             if (boleto.getBoleto().getPagador().getEndereco().getComplemento() != null) {
                 enderecoCompleto = enderecoCompleto + " " + boleto.getBoleto().getPagador().getEndereco().getComplemento();
             }
-            linhaArquivo.append(StringUtils.rightPad(enderecoCompleto, 40, " "));
-            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getBairro(), 15, " "));
+            linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(enderecoCompleto,40), 40, " "));
+            linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(boleto.getBoleto().getPagador().getEndereco().getBairro(),15), 15, " "));
             linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getPagador().getEndereco().getCep(), 8, "0"));
-            linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getPagador().getEndereco().getCidade(), 15, " "));
+            linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(boleto.getBoleto().getPagador().getEndereco().getCidade(),15), 15, " "));
             linhaArquivo.append(boleto.getBoleto().getPagador().getEndereco().getUf());
 
             if (boleto.getBoleto().getBeneficiarioFinal() != null) {
                 linhaArquivo.append(boleto.getBoleto().getBeneficiarioFinal().isClienteCpf() ? "1" : "2");//Sac. / Aval.
                 linhaArquivo.append(StringUtils.leftPad(boleto.getBoleto().getBeneficiarioFinal().getDocumento(), 15, "0"));//CNPJ/CPF Avalista
-                linhaArquivo.append(StringUtils.rightPad(boleto.getBoleto().getBeneficiarioFinal().getNome(), 40, " "));//Nome do Sacador/Avalista
+                linhaArquivo.append(StringUtils.rightPad(BoletoUtil.limitarTamanhoString(boleto.getBoleto().getBeneficiarioFinal().getNome(),40), 40, " "));
+                //Nome do Sacador/Avalista
             } else {
                 linhaArquivo.append("0");//Sac. / Aval.
                 linhaArquivo.append(StringUtils.repeat("0", 15));//CNPJ/CPF Avalista

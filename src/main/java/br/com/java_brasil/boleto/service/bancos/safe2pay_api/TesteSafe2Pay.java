@@ -27,7 +27,7 @@ public class TesteSafe2Pay {
         boletoService = new BoletoService(BoletoBanco.SAFE2PAY_API, configuracao);
     }
 
-    private static BoletoModel preencheBoleto() {
+    private static BoletoModel preencheBoleto(LocalDate dataVencimento) {
         BoletoModel boleto = new BoletoModel();
         Beneficiario beneficiario = new Beneficiario();
         beneficiario.setDocumento("29422426000115");
@@ -51,24 +51,68 @@ public class TesteSafe2Pay {
         boleto.setDescricoes(Arrays.asList(new InformacaoModel("Descrição 1"), new InformacaoModel("Descrição 2"), new InformacaoModel("Descrição 3"), new InformacaoModel("Descrição 4"), new InformacaoModel("Descrição 5")));
 
         boleto.setValorBoleto(BigDecimal.TEN);
-        boleto.setDataVencimento(LocalDate.of(2022, 12, 30));
+        boleto.setDataVencimento(dataVencimento);
 
         return boleto;
     }
 
-    public static void testaEnviaBoleto() throws IOException {
+    public static void testaEnviaBoleto(LocalDate dataVencimento) throws IOException {
         configuraTeste();
-        BoletoModel boletoModel = preencheBoleto();
+        BoletoModel boletoModel = preencheBoleto(dataVencimento);
         BoletoModel boletoResponse = boletoService.enviarBoleto(boletoModel);
-        System.out.println(boletoResponse.getUrlPdf());
+
+        System.out.println("Numero Boleto : " + boletoResponse.getNumeroBoleto());
+        System.out.println("Data Boleto : " + boletoResponse.getDataVencimento());
+        System.out.println("Situação Boleto : " + boletoResponse.getSituacao());
+        System.out.println("Url Boleto : " + boletoResponse.getUrlPdf());
+
         byte[] bytes = boletoService.imprimirBoletoBanco(boletoModel);
         FileUtils.writeByteArrayToFile(new File("/safe2pay/boleto-safe2pay-" + boletoResponse.getCodigoBarras() + ".pdf"), bytes);
+    }
 
+    public static void testaConsultaBoleto(String numeroBoleto) throws IOException {
+        configuraTeste();
+        BoletoModel boletoModel = new BoletoModel();
+        boletoModel.setNumeroBoleto(numeroBoleto);
+        BoletoModel boletoResponse = boletoService.consultarBoleto(boletoModel);
+
+        System.out.println("Numero Boleto : " + boletoResponse.getNumeroBoleto());
+        System.out.println("Data Boleto : " + boletoResponse.getDataVencimento());
+        System.out.println("Situação Boleto : " + boletoResponse.getSituacao());
+        System.out.println("Url Boleto : " + boletoResponse.getUrlPdf());
+    }
+
+    public static void testaAlteraBoleto(String numeroBoleto, LocalDate dataVencimento) throws IOException {
+        configuraTeste();
+        BoletoModel boletoModel = new BoletoModel();
+        boletoModel.setNumeroBoleto(numeroBoleto);
+        boletoModel.setDataVencimento(dataVencimento);
+        BoletoModel boletoResponse = boletoService.alterarBoleto(boletoModel);
+
+        System.out.println("Numero Boleto : " + boletoResponse.getNumeroBoleto());
+        System.out.println("Data Boleto : " + boletoResponse.getDataVencimento());
+        System.out.println("Situação Boleto : " + boletoResponse.getSituacao());
+        System.out.println("Url Boleto : " + boletoResponse.getUrlPdf());
+    }
+
+    public static void testaBaixaBoleto(String numeroBoleto) throws IOException {
+        configuraTeste();
+        BoletoModel boletoModel = new BoletoModel();
+        boletoModel.setNumeroBoleto(numeroBoleto);
+        BoletoModel boletoResponse = boletoService.baixarBoleto(boletoModel);
+
+        System.out.println("Numero Boleto : " + boletoResponse.getNumeroBoleto());
+        System.out.println("Data Boleto : " + boletoResponse.getDataVencimento());
+        System.out.println("Situação Boleto : " + boletoResponse.getSituacao());
+        System.out.println("Url Boleto : " + boletoResponse.getUrlPdf());
     }
 
 
     public static void main(String[] args) throws IOException {
-        testaEnviaBoleto();
+        //testaEnviaBoleto(LocalDate.now().plusDays(1));
+        testaConsultaBoleto("32709128");
+        //testaAlteraBoleto("32709128", LocalDate.now().plusDays(10));
+        //testaBaixaBoleto("32709128");
     }
 
 

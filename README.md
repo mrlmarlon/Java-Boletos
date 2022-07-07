@@ -1,6 +1,6 @@
 # Java-Boletos
 
-[![MIT License](https://img.shields.io/github/license/Java-Brasil/Java-Boletos.svg) ](https://github.com/Java-Brasil/Java-Boletos/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java-boletos.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java-boletos/1.0.1/jar) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Java-Brasil/Java-Boletos.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Java-Brasil/Java-Boletos/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Java-Brasil/Java-Boletos.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Java-Brasil/Java-Boletos/alerts/)
+[![MIT License](https://img.shields.io/github/license/Java-Brasil/Java-Boletos.svg) ](https://github.com/Java-Brasil/Java-Boletos/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java-boletos.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java-boletos/1.0.2/jar) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Java-Brasil/Java-Boletos.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Java-Brasil/Java-Boletos/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Java-Brasil/Java-Boletos.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Java-Brasil/Java-Boletos/alerts/)
 
 Projeto Open Source para geração de boletos dos bancos criado e mantido pela comunidade JavaBrasil
 
@@ -10,7 +10,7 @@ Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
 
 Para Iniciar :
 
-- Caso use Libs baixe o java-boletos.jar (https://github.com/Java-Brasil/Java-Boletos/raw/master/java-boletos.jar) e o
+- Caso use Libs baixe o java-boletos.jar (https://github.com/Java-Brasil/Java-Boletos/raw/master/java-boletos-1.0.2.jar) e o
   adicione às bibliotecas de seu projeto.
 
 - Maven :
@@ -19,7 +19,7 @@ Para Iniciar :
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java-boletos</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@ repositories {
     }
 }
 dependencies {
-    implementation "br.com.swconsultoria:java-boletos:1.0.1"
+    implementation "br.com.swconsultoria:java-boletos:1.0.2"
 }
 ```
 
@@ -58,6 +58,10 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________
 
 # Historico de Versões
+
+## v1.0.2 - 07/07/2022
+- Correção de layout de Sicoob CNAB 240
+- Adicionado Alteração, Baixa e Consulta do Safe2Pay
 
 ## v1.0.1 - 28/06/2022
 - Adicionado Itaú

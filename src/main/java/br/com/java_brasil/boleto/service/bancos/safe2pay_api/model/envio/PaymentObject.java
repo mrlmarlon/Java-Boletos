@@ -8,6 +8,7 @@ package br.com.java_brasil.boleto.service.bancos.safe2pay_api.model.envio;
 import br.com.java_brasil.boleto.model.BoletoModel;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,25 @@ public class PaymentObject {
     private Integer discountAmount;
     @JsonAlias("DiscountDue")
     private String discountDue;
+    @JsonAlias("Command")
+    private Integer command;
 
-    public PaymentObject() {
+    public PaymentObject(LocalDate dataVencimento, int command) {
+        setDueDate(dataVencimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        setCommand(command);
     }
 
     public PaymentObject(BoletoModel boletoModel) {
         setDueDate(boletoModel.getDataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         boletoModel.getDescricoes().forEach(s -> getMessage().add(s.getInformacao()));
+    }
+
+    public Integer getCommand() {
+        return command;
+    }
+
+    public void setCommand(Integer command) {
+        this.command = command;
     }
 
     public String getBankSlipNumber() {

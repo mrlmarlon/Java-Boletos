@@ -2,12 +2,18 @@ package br.com.java_brasil.boleto.service.bancos.safe2pay_api.model.envio;
 
 import br.com.java_brasil.boleto.model.BoletoModel;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Payment {
 
-    public Payment() {
+    public Payment(String numeroBoleto, LocalDate dataVencimento, int i) {
+        setId(Integer.valueOf(numeroBoleto));
+        setPaymentMethod("1");
+        PaymentObject paymentBoleto = new PaymentObject(dataVencimento, 1);
+        setPaymentObject(paymentBoleto);
+
     }
 
     public Payment(BoletoModel boletoModel, boolean sandbox) {
@@ -28,6 +34,7 @@ public class Payment {
 
     }
 
+    private Integer id;
     private Boolean isSandbox;
     private String application;
     private String vendor;
@@ -37,6 +44,14 @@ public class Payment {
     private Customer customer;
     private List<Product> products = new ArrayList<>();
     private PaymentObject paymentObject;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Boolean getIsSandbox() {
         return isSandbox;

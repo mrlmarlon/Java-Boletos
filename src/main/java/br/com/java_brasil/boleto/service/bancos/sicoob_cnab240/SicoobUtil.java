@@ -78,8 +78,9 @@ public class SicoobUtil {
         int dezena = total + (10 - resto);
 
         int digito = dezena - total;
-        if (digito <= 1 || digito > 9) {
-            digito = 1;
+
+        if (digito > 9) {
+            digito = 0;
         }
         return digito;
     }

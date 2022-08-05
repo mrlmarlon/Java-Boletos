@@ -58,6 +58,9 @@ ________________________________________________________________________________
 
 # Historico de Versões
 
+## v1.0.3 - 05/08/2022
+- Atualização Versao Jasper
+
 ## v1.0.3 - 02/08/2022
 - Correção de digito linha Digitável Sicoob CNAB 240
 

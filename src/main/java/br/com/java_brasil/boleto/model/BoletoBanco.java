@@ -1,5 +1,6 @@
 package br.com.java_brasil.boleto.model;
 
+import br.com.java_brasil.boleto.service.bancos.banco_brasil_api.BancoBrasilAPI;
 import br.com.java_brasil.boleto.service.bancos.banrisul_api.BancoBanrisulAPI;
 import br.com.java_brasil.boleto.service.bancos.bradesco_api.BancoBradescoAPI;
 import br.com.java_brasil.boleto.service.bancos.bradesco_cnab400.BancoBradescoCnab400;
@@ -17,6 +18,7 @@ public enum BoletoBanco {
 
     EXEMPLO("Exemplo", BancoExemplo.class),
     BRADESCO_API("Bradesco API", BancoBradescoAPI.class),
+    BANCO_BRASIL_API("Banco do Brasil API", BancoBrasilAPI.class);
     BANRISUL_API("Banrisul API", BancoBanrisulAPI.class),
     BRADESCO_CNAB400("Bradesco CNAB400", BancoBradescoCnab400.class),
     SICREDI_CNAB400("Sicredi CNAB400", BancoSicrediCnab400.class),

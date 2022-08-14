@@ -83,5 +83,19 @@ public class BoletoModel implements Serializable {
     protected String pixCopiaCola;
     protected String urlPdf;
     protected String pixBase64;
+    protected String codigosEmpresa;
+
+    private Long numeroConvenio;
+    private Integer numeroCarteira;
+    private Integer numeroVariacaoCarteira;
+    private Integer codigoModalidade;
+    private String codigoAceite;
+    private Integer codigoTipoTituloCobranca;
+    private String indicadorPermissaoRecebimentoParcial;
+    private String numeroTituloBeneficiario;
+    private String numeroTituloCliente;
+    private String linhaDigitavel;
+    private Long codigoCliente;
+    private Long numeroContratoCobranca;
 
 }

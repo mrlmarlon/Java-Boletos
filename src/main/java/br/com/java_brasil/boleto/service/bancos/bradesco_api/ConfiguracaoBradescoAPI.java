@@ -31,8 +31,6 @@ public class ConfiguracaoBradescoAPI implements Configuracao {
     @NotEmpty
     private String urlBaseHomologacao = "https://proxy.api.prebanco.com.br";
 
-    @NotEmpty
-
     public String getURLBase() {
         return this.ambiente.equals(AmbienteEnum.PRODUCAO) ? this.urlBaseProducao : this.urlBaseHomologacao;
     }

@@ -18,7 +18,7 @@ public enum BoletoBanco {
 
     EXEMPLO("Exemplo", BancoExemplo.class),
     BRADESCO_API("Bradesco API", BancoBradescoAPI.class),
-    BANCO_BRASIL_API("Banco do Brasil API", BancoBrasilAPI.class);
+    BANCO_BRASIL_API("Banco do Brasil API", BancoBrasilAPI.class),
     BANRISUL_API("Banrisul API", BancoBanrisulAPI.class),
     BRADESCO_CNAB400("Bradesco CNAB400", BancoBradescoCnab400.class),
     SICREDI_CNAB400("Sicredi CNAB400", BancoSicrediCnab400.class),

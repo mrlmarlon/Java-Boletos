@@ -18,6 +18,7 @@ public class Beneficiario implements Serializable {
     private String digitoConta;
 
     private String carteira;
+    private String variacaoCarteira;
     private String nossoNumero;
     private String digitoNossoNumero;
 
